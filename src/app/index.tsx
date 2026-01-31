@@ -1,6 +1,6 @@
 import { AppProvider } from './provider';
 import { AppRouter } from './router';
-import bgImage from '@/assets/gray-abstract-wireframe-technology-background.jpg';
+import bgImage from '@/assets/chess-bg.jpg';
 
 export const App = () => {
   return (

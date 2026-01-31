@@ -1,3 +1,9 @@
+import { PrimaryButton } from "@/components/ui"
+
 export function LandingLayout() {
-  return (<div><p>This is the landing page.</p></div>)
+  return (
+    <div className="flex p-4 ml-[30%] min-h-screen items-center justify-center">
+      <PrimaryButton className="">Play</PrimaryButton>
+    </div>
+  );
 }
