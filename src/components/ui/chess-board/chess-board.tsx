@@ -3,20 +3,41 @@ import { ChessPiece } from "@/components/features";
 import { useState } from "react";
 
 export function ChessBoard() {
-  const { board } = useBoard();
-  const { fetchMoves, availableMoves, setAvailableMoves } = useMoves();
+  const { board, setBoard } = useBoard();
+  const { fetchMoves, availableMoves, setAvailableMoves, makeMove } = useMoves();
   const squares = Array.from({ length: 64 });
   const [selectedPos, setSelectedPos] = useState<{ r: number, c: number } | null>(null);
 
-  const handleShowMoves = async (row: number, col: number) => {
-    if (selectedPos?.r === row && selectedPos?.c === col) {
-      setSelectedPos(null);
-      setAvailableMoves([]);
+  const handleSquareClick = async (row: number, col: number) => {
+    const isAvailableMove = availableMoves.some(m => m.row === row && m.column === col);
+
+    if (isAvailableMove && selectedPos) {
+      const from = { row: selectedPos.r, column: selectedPos.c };
+      const to = { row, column: col };
+
+      const updatedBoard = await makeMove(from, to);
+      if (updatedBoard) {
+        setBoard(updatedBoard);
+        setAvailableMoves([]);
+        setSelectedPos(null);
+      }
       return;
     }
 
-    setSelectedPos({ r: row, c: col });
-    await fetchMoves(row, col);
+    const pieceData = board.find(p => p.key.row === row && p.key.column === col);
+
+    if (pieceData?.type) {
+      if (selectedPos?.r === row && selectedPos?.c === col) {
+        setSelectedPos(null);
+        setAvailableMoves([]);
+      } else {
+        setSelectedPos({ r: row, c: col });
+        await fetchMoves(row, col);
+      }
+    } else {
+      setSelectedPos(null);
+      setAvailableMoves([]);
+    }
   };
 
   return (
@@ -34,8 +55,9 @@ export function ChessBoard() {
           return (
             <div
               key={index}
+              onClick={() => handleSquareClick(row, col)}
               className={`w-12 h-12 md:w-20 md:h-20 flex items-center justify-center relative transition-all
-                ${isLight ? 'bg-orange-100/90' : 'bg-orange-800/80'}
+                ${isLight ? 'bg-white/30' : 'bg-black/30'}
                 ${isSelected ? 'ring-4 ring-emerald-600 ring-inset bg-emerald-400' : ''}
               `}
             >
@@ -43,7 +65,7 @@ export function ChessBoard() {
                 <ChessPiece
                   type={pieceData.type}
                   color={pieceData.color || 'White'}
-                  onClick={() => handleShowMoves(row, col)}
+                  onClick={() => handleSquareClick(row, col)}
                 />
               )}
 

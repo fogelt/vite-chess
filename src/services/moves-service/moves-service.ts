@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 const MOVES_API = import.meta.env.VITE_GET_MOVES_API;
+const MAKE_MOVE_API = import.meta.env.VITE_MAKE_MOVE_API;
 
 interface Move {
   row: number;
@@ -9,6 +10,25 @@ interface Move {
 
 export function useMoves() {
   const [availableMoves, setAvailableMoves] = useState<Move[]>([]);
+
+  const makeMove = async (from: Move, to: Move) => {
+    try {
+      const response = await fetch(MAKE_MOVE_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ from, to }),
+      });
+
+      if (!response.ok) throw new Error("Failed to make move");
+
+      const updatedBoard = await response.json();
+      setAvailableMoves([]);
+      return updatedBoard;
+    } catch (error) {
+      console.error("Move Error:", error);
+      throw error;
+    }
+  };
 
   const fetchMoves = async (row: number, column: number) => {
     try {
@@ -35,5 +55,5 @@ export function useMoves() {
     }
   };
 
-  return { fetchMoves, availableMoves, setAvailableMoves };
+  return { fetchMoves, makeMove, availableMoves, setAvailableMoves };
 }
