@@ -2,8 +2,17 @@ import { useState, useEffect } from "react";
 
 const BOARD_API = import.meta.env.VITE_GET_BOARD_API
 
-export function usePieces() {
-  const [piece, setPiece] = useState("");
+interface ChessPiece {
+  key: {
+    row: number;
+    column: number;
+  };
+  type: string | null;
+  color: string | null;
+}
+
+export function useBoard() {
+  const [board, setBoard] = useState<ChessPiece[]>([]);
 
   useEffect(() => {
     async function fetchPiece() {
@@ -15,7 +24,7 @@ export function usePieces() {
         }
 
         const data = await response.json();
-        setPiece(data.piece);
+        setBoard(data);
       } catch (error) {
         console.error("Error getting piece:", error);
       }
@@ -24,5 +33,5 @@ export function usePieces() {
     fetchPiece();
   }, []);
 
-  return { piece, setPiece };
+  return { board, setBoard };
 }

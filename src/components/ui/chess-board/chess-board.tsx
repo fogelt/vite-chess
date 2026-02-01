@@ -1,7 +1,7 @@
-import { usePieces } from "@/services";
+import { useBoard } from "@/services";
 
 export function ChessBoard() {
-  const { piece } = usePieces();
+  const { board } = useBoard();
   const squares = Array.from({ length: 64 });
 
   return (
@@ -11,18 +11,23 @@ export function ChessBoard() {
           const row = Math.floor(index / 8);
           const col = index % 8;
           const isLight = (row + col) % 2 === 0;
+          const pieceData = board.find(p => p.key.row === row && p.key.column === col);
 
           return (
             <div
               key={index}
-              className={`
-                w-12 h-12 md:w-20 md:h-20 
-                flex items-center justify-center
-                ${isLight ? 'bg-orange-100' : 'bg-orange-700'}
-              `}
+              className={`w-12 h-12 md:w-20 md:h-20 flex items-center justify-center relative
+                ${isLight ? 'bg-orange-100' : 'bg-orange-700'}`}
             >
-              <span className="text-xs text-black/50 absolute">
-                {row},{col} {piece}
+              {pieceData?.type && (
+                <div className="flex flex-col items-center leading-none">
+                  <span className={`font-bold ${pieceData.color === 'White' ? 'text-white drop-shadow-md' : 'text-black'}`}>
+                    {pieceData.type}
+                  </span>
+                </div>
+              )}
+              <span className="text-[10px] text-black absolute bottom-0 right-1">
+                {row}, {col}
               </span>
             </div>
           );
