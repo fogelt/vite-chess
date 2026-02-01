@@ -1,4 +1,5 @@
-import { ChessBoard, PrimaryContainer, PrimaryButton } from "@/components/ui"
+import { PrimaryContainer, PrimaryButton } from "@/components/ui"
+import { ChessBoard } from '@/components/features'
 import { useNavigate } from "react-router-dom";
 import { ChessQueen, ChessBishop } from "lucide-react";
 import { useStart } from "@/services";

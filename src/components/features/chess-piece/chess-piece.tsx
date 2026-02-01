@@ -1,4 +1,5 @@
 import { ChessRook, ChessKnight, ChessBishop, ChessKing, ChessQueen, ChessPawn } from "lucide-react";
+import { useDraggable } from '@dnd-kit/core';
 
 const PIECE_ICONS: Record<string, React.ElementType> = {
   Pawn: ChessPawn,
@@ -9,31 +10,27 @@ const PIECE_ICONS: Record<string, React.ElementType> = {
   King: ChessKing,
 };
 
-interface PieceProps {
-  type: string;
-  color: string;
-  onClick: () => void;
-}
+export function ChessPiece({ type, color, id }: { type: string, color: string, id: string }) {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+    id: id,
+  });
 
-export function ChessPiece({ type, color, onClick }: PieceProps) {
+  const style = transform ? {
+    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+    cursor: 'grabbing',
+  } : undefined;
+
   const Icon = PIECE_ICONS[type];
-  if (!Icon) return null;
 
   return (
-    <button
-      onClick={(e) => {
-        e.stopPropagation();
-        onClick();
-      }}
-      className="w-full h-full flex items-center justify-center transition-transform hover:scale-110 active:scale-95"
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
+      className={`z-50 ${isDragging ? 'opacity-50' : ''} cursor-grab active:cursor-grabbing`}
     >
-      <Icon
-        size={40}
-        className={`${color === 'White'
-          ? 'stroke-white'
-          : 'stroke-black'
-          }`}
-      />
-    </button>
+      <Icon size={40} className={color === 'White' ? 'stroke-white' : 'stroke-black'} />
+    </div>
   );
 }
