@@ -1,9 +1,10 @@
 interface PrimaryButtonProps {
   className?: string;
   children?: React.ReactNode;
+  onClick?: () => void;
 }
 
-export function PrimaryButton({ className, children }: PrimaryButtonProps) {
+export function PrimaryButton({ className, children, onClick }: PrimaryButtonProps) {
   return (
     <button className={`      
       hover:text-white
@@ -11,7 +12,8 @@ export function PrimaryButton({ className, children }: PrimaryButtonProps) {
       uppercase tracking-[0.2em] font-light text-white/50
       hover:scale-[0.98] duration-300
       text-2xl p-3 
-      ${className}`}>
+      ${className}`}
+      onClick={onClick}>
       {children}
     </button>
   );
