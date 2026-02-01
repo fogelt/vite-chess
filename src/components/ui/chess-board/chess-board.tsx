@@ -1,4 +1,7 @@
+import { usePieces } from "@/services";
+
 export function ChessBoard() {
+  const { piece } = usePieces();
   const squares = Array.from({ length: 64 });
 
   return (
@@ -19,7 +22,7 @@ export function ChessBoard() {
               `}
             >
               <span className="text-xs text-black/50 absolute">
-                {row},{col}
+                {row},{col} {piece}
               </span>
             </div>
           );
