@@ -1,11 +1,22 @@
-import { useBoard, useMoves } from "@/services";
 import { ChessPiece, ChessSquare } from "@/components/features";
 import { useState } from "react";
 import { DndContext, DragStartEvent, DragEndEvent } from '@dnd-kit/core';
 
-export function ChessBoard() {
-  const { board, setBoard } = useBoard();
-  const { fetchMoves, availableMoves, setAvailableMoves, makeMove } = useMoves();
+interface Move {
+  row: number;
+  column: number;
+}
+
+interface ChessBoardProps {
+  board: any[];
+  setBoard: (board: any[]) => void;
+  fetchMoves: (r: number, c: number) => Promise<Move[]>;
+  availableMoves: Move[];
+  setAvailableMoves: (moves: Move[]) => void;
+  makeMove: (from: Move, to: Move) => Promise<any>;
+}
+
+export function ChessBoard({ board, setBoard, fetchMoves, availableMoves, setAvailableMoves, makeMove }: ChessBoardProps) {
   const [selectedPos, setSelectedPos] = useState<{ r: number, c: number } | null>(null);
 
   const handleDragStart = async (event: DragStartEvent) => {

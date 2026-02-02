@@ -35,26 +35,25 @@ export function useStart() {
 export function useBoard() {
   const [board, setBoard] = useState<ChessPiece[]>([]);
 
-  useEffect(() => {
-    async function fetchPiece() {
-      try {
-        const response = await fetch(BOARD_API, {
-          cache: 'no-store'
-        });
+  const fetchBoard = async () => {
+    try {
+      const response = await fetch(BOARD_API, {
+        cache: 'no-store'
+      });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch piece");
-        }
+      if (!response.ok) throw new Error("Failed to fetch board");
 
-        const data = await response.json();
-        setBoard(data);
-      } catch (error) {
-        console.error("Error getting piece:", error);
-      }
+      const data = await response.json();
+      setBoard(data);
+      return data;
+    } catch (error) {
+      console.error("Error getting board:", error);
     }
+  };
 
-    fetchPiece();
+  useEffect(() => {
+    fetchBoard();
   }, []);
 
-  return { board, setBoard };
+  return { board, setBoard, fetchBoard };
 }

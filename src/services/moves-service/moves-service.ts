@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 const MOVES_API = import.meta.env.VITE_GET_MOVES_API;
 const MAKE_MOVE_API = import.meta.env.VITE_MAKE_MOVE_API;
+const GET_TURN_API = import.meta.env.VITE_GET_TURN_API;
 
 interface Move {
   row: number;
@@ -10,6 +11,20 @@ interface Move {
 
 export function useMoves() {
   const [availableMoves, setAvailableMoves] = useState<Move[]>([]);
+  const [playerTurn, setPlayerTurn] = useState<string>("White");
+
+  const fetchTurn = async () => {
+    try {
+      const response = await fetch(GET_TURN_API);
+      if (!response.ok) throw new Error("Failed to fetch turn");
+
+      const data = await response.json(); // C# returns "White" or "Black"
+      setPlayerTurn(data);
+      return data;
+    } catch (error) {
+      console.error("Could not fetch turn", error);
+    }
+  };
 
   const makeMove = async (from: Move, to: Move) => {
     try {
@@ -23,6 +38,9 @@ export function useMoves() {
 
       const updatedBoard = await response.json();
       setAvailableMoves([]);
+
+      await fetchTurn();
+
       return updatedBoard;
     } catch (error) {
       console.error("Move Error:", error);
@@ -55,5 +73,5 @@ export function useMoves() {
     }
   };
 
-  return { fetchMoves, makeMove, availableMoves, setAvailableMoves };
+  return { fetchMoves, makeMove, availableMoves, setAvailableMoves, playerTurn, fetchTurn };
 }

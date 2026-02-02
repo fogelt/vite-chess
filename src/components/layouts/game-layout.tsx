@@ -1,29 +1,54 @@
 import { PrimaryContainer, PrimaryButton } from "@/components/ui"
-import { ChessBoard } from '@/components/features'
+import { ChessBoard, ChessInfo } from '@/components/features'
 import { useNavigate } from "react-router-dom";
 import { ChessQueen, ChessBishop } from "lucide-react";
-import { useStart } from "@/services";
-import { useState } from "react";
+import { useStart, useMoves, useBoard } from "@/services";
 
 export function GameLayout() {
   const navigate = useNavigate();
-  const [gameId, setGameId] = useState(0);
-  const { startGame } = useStart();
+  const { startGame, } = useStart();
+  const { fetchMoves, availableMoves, setAvailableMoves, makeMove, playerTurn, fetchTurn } = useMoves();
+  const { board, setBoard, fetchBoard } = useBoard();
 
   const handleStart = async () => {
     await startGame();
-    setGameId(prev => prev + 1); // Changing this forces ChessBoard to "reload"
+    await fetchBoard();
+    await fetchTurn();
   };
 
   return (
-    <div className="flex p-4 ml-[30%] min-h-screen gap-5 items-center justify-center">
-      <PrimaryContainer>
-        <PrimaryButton className="flex" onClick={handleStart}><ChessQueen size={25} className="mt-1 mr-5" />Start</PrimaryButton>
-        <PrimaryButton className="flex" onClick={() => navigate('/')}><ChessBishop size={25} className="mt-1 mr-5" />Go back</PrimaryButton>
+    <div className="flex h-screen w-full p-8 gap-8 overflow-hidden">
+
+      <div className="flex flex-col w-1/3 justify-between h-full">
+
+        <div className="self-end">
+          <ChessInfo
+            playerTurn={playerTurn} />
+        </div>
+
+        <PrimaryContainer className="flex flex-col gap-3">
+          <PrimaryButton className="flex w-full" onClick={handleStart}>
+            <ChessQueen size={25} className="mr-3" />
+            Start Game
+          </PrimaryButton>
+          <PrimaryButton className="flex w-full" onClick={() => navigate('/')}>
+            <ChessBishop size={25} className="mr-3" />
+            Go Back
+          </PrimaryButton>
+        </PrimaryContainer>
+      </div>
+
+      <PrimaryContainer className="flex-1 flex items-center justify-center">
+        <ChessBoard
+          board={board}
+          setBoard={setBoard}
+          fetchMoves={fetchMoves}
+          availableMoves={availableMoves}
+          setAvailableMoves={setAvailableMoves}
+          makeMove={makeMove}
+        />
       </PrimaryContainer>
-      <PrimaryContainer>
-        <ChessBoard key={gameId} />
-      </PrimaryContainer>
+
     </div>
   );
 }
