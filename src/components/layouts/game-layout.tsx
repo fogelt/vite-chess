@@ -47,7 +47,7 @@ export function GameLayout() {
 
       <PrimaryContainer className="flex flex-1 flex-row items-center justify-center">
 
-        <div className="self-end mb-10">
+        <div className={`${myColor === "White" ? "self-end mb-10" : "self-start mt-10"}`}>
           <ChessPlayer playerColor="White" playerName="Player1" playerTurn={playerTurn} />
         </div>
 
@@ -72,7 +72,7 @@ export function GameLayout() {
           )}
         </div>
 
-        <div className="self-start mt-10">
+        <div className={`${myColor === "White" ? "self-start mt-10" : "self-end mb-10"}`}>
           <ChessPlayer playerColor="Black" playerName="Player2" playerTurn={playerTurn} />
         </div>
       </PrimaryContainer>
