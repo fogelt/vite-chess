@@ -1,5 +1,5 @@
 import { PrimaryContainer, PrimaryButton } from "@/components/ui"
-import { ChessBoard, ChessPlayer } from '@/components/features'
+import { ChessBoard, ChessPlayer, ChessModal } from '@/components/features'
 import { useNavigate } from "react-router-dom";
 import { ChessQueen, ChessBishop } from "lucide-react";
 import { useStart, useMoves, useBoard } from "@/services";
@@ -7,10 +7,11 @@ import { useStart, useMoves, useBoard } from "@/services";
 export function GameLayout() {
   const navigate = useNavigate();
   const { startGame, } = useStart();
-  const { fetchMoves, availableMoves, setAvailableMoves, makeMove, playerTurn, fetchTurn } = useMoves();
+  const { fetchMoves, availableMoves, setAvailableMoves, makeMove, playerTurn, fetchTurn, isCheckmate, resetMoveState } = useMoves();
   const { board, setBoard, fetchBoard } = useBoard();
 
   const handleStart = async () => {
+    resetMoveState();
     await startGame();
     await fetchBoard();
     await fetchTurn();
@@ -33,11 +34,12 @@ export function GameLayout() {
       </div>
 
       <PrimaryContainer className="flex flex-1 flex-row items-center justify-center">
+
         <div className="self-end mb-10">
           <ChessPlayer playerColor="White" playerName="Player1" playerTurn={playerTurn} />
         </div>
 
-        <div className="flex-shrink-0">
+        <div className="relative flex-shrink-0 h-fit w-fit">
           <ChessBoard
             board={board}
             setBoard={setBoard}
@@ -46,6 +48,15 @@ export function GameLayout() {
             setAvailableMoves={setAvailableMoves}
             makeMove={makeMove}
           />
+          {isCheckmate && (
+            <ChessModal>
+              <h2 className="text-2xl mb-4">Checkmate!</h2>
+              <p>{playerTurn === "White" ? "Black" : "White"} wins the game.</p>
+              <PrimaryButton onClick={handleStart} className="mt-6">
+                Play Again
+              </PrimaryButton>
+            </ChessModal>
+          )}
         </div>
 
         <div className="self-start mt-10">

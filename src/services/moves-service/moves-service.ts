@@ -77,6 +77,12 @@ export function useMoves() {
     }
   };
 
+  const resetMoveState = () => {
+    setIsCheckmate(false);
+    setIsCheck(false);
+    setAvailableMoves([]);
+  };
+
   return {
     fetchMoves,
     makeMove,
@@ -85,6 +91,7 @@ export function useMoves() {
     playerTurn,
     fetchTurn,
     isCheck,
-    isCheckmate
+    isCheckmate,
+    resetMoveState
   };
 }
