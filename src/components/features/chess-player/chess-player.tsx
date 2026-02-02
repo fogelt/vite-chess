@@ -1,7 +1,10 @@
+//TODO Grab from db/accounts
+//TODO Implement time control 
 import { PrimaryContainer } from "@/components/ui";
+import bgImage from '@/assets/placeholder-avatar.webp';
 
 interface ChessInfoProps {
-  playerColor: string;
+  playerColor: string | null;
   playerName: string;
   playerTurn: string;
 }
@@ -9,22 +12,28 @@ interface ChessInfoProps {
 export function ChessPlayer({ playerColor, playerName, playerTurn }: ChessInfoProps) {
 
   return (
-    <PrimaryContainer className="flex items-center justify-center">
-      <div className="flex flex-col items-center gap-2 min-w-20">
+    <PrimaryContainer className="flex flex-col items-center justify-center">
+      <div className="flex flex-row items-center gap-2 min-w-20">
         <span
-          className={`w-10 h-10 rounded-full transition-all duration-500 shadow-lg inline-block
+          className={`w-16 h-16 rounded-full transition-all duration-500 shadow-lg inline-block bg-cover bg-center ring-2 ring-inset
             ${playerColor === "White"
-              ? 'bg-white'
-              : 'bg-black'
+              ? 'ring-white'
+              : 'ring-black'
             }
           ${playerTurn === playerColor
-              ? 'ring-2 ring-emerald-500'
+              ? ''
               : ''
             }`}
+          style={{ backgroundImage: `url(${bgImage})` }}
         />
-        <p className="text-xs font-semibold uppercase tracking-widest opacity-60">
-          {playerName}
-        </p>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest opacity-60">
+            {playerName}
+          </p>
+          <p className="text-xs text-amber-200 font-semibold uppercase tracking-widest opacity-60">
+            Time: 5:00
+          </p>
+        </div>
       </div>
     </PrimaryContainer>
   );

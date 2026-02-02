@@ -14,6 +14,7 @@ export function GameLayout() {
   const { fetchMoves, availableMoves, setAvailableMoves, makeMove, playerTurn, isCheckmate, resetMoveState, myColor } = useMoves(gameId || null, setBoard);
 
   const isUserBlack = myColor === "Black";
+  const opponentColor = isUserBlack ? "White" : "Black";
 
   const handleStart = async () => {
     resetMoveState();
@@ -46,9 +47,9 @@ export function GameLayout() {
       </div>
 
       <PrimaryContainer className="flex flex-1 flex-row items-center justify-center">
-
-        <div className={`${myColor === "White" ? "self-end mb-10" : "self-start mt-10"}`}>
-          <ChessPlayer playerColor="White" playerName="Player1" playerTurn={playerTurn} />
+        <div className="flex flex-col h-full relative items-center justify-between py-12">
+          <ChessPlayer playerColor={opponentColor} playerName={`${opponentColor} player`} playerTurn={playerTurn} />
+          <ChessPlayer playerColor={myColor} playerName={`${myColor} player`} playerTurn={playerTurn} />
         </div>
 
         <div className="relative flex-shrink-0 h-fit w-fit">
@@ -70,10 +71,6 @@ export function GameLayout() {
               </PrimaryButton>
             </ChessModal>
           )}
-        </div>
-
-        <div className={`${myColor === "White" ? "self-start mt-10" : "self-end mb-10"}`}>
-          <ChessPlayer playerColor="Black" playerName="Player2" playerTurn={playerTurn} />
         </div>
       </PrimaryContainer>
 
