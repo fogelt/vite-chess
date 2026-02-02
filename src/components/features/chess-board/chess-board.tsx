@@ -10,7 +10,7 @@ interface Move {
 interface ChessBoardProps {
   board: any[];
   setBoard: (board: any[]) => void;
-  fetchMoves: (r: number, c: number) => Promise<Move[]>;
+  fetchMoves: (r: number, c: number) => Promise<Move[] | undefined>;
   availableMoves: Move[];
   setAvailableMoves: (moves: Move[]) => void;
   makeMove: (from: Move, to: Move) => Promise<any>;

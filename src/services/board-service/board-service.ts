@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
-const BOARD_API = import.meta.env.VITE_GET_BOARD_API
-const START_API = import.meta.env.VITE_START_GAME_API
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 interface ChessPiece {
   key: {
@@ -15,14 +14,14 @@ interface ChessPiece {
 export function useStart() {
   const startGame = async () => {
     try {
-      const response = await fetch(START_API, {
+      const response = await fetch(`${BASE_URL}/api/game/start-game`, {
         method: "POST"
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to initialize game");
-      }
+      if (!response.ok) throw new Error("Failed to initialize game");
 
+      const data = await response.json();
+      return data;
     } catch (error) {
       console.error("Could not post start:", error);
       throw error;
@@ -35,9 +34,10 @@ export function useStart() {
 export function useBoard() {
   const [board, setBoard] = useState<ChessPiece[]>([]);
 
-  const fetchBoard = async () => {
+  const fetchBoard = async (gameId: string) => {
+    if (!gameId) return;
     try {
-      const response = await fetch(BOARD_API, {
+      const response = await fetch(`${BASE_URL}/api/game/${gameId}/board`, {
         cache: 'no-store'
       });
 
@@ -50,10 +50,6 @@ export function useBoard() {
       console.error("Error getting board:", error);
     }
   };
-
-  useEffect(() => {
-    fetchBoard();
-  }, []);
 
   return { board, setBoard, fetchBoard };
 }

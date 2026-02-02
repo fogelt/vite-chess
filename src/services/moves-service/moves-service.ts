@@ -1,46 +1,90 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { UseUser } from '@/services';
+import * as signalR from "@microsoft/signalr";
 
-const MOVES_API = import.meta.env.VITE_GET_MOVES_API;
-const MAKE_MOVE_API = import.meta.env.VITE_MAKE_MOVE_API;
-const GET_TURN_API = import.meta.env.VITE_GET_TURN_API;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const HUB_URL = import.meta.env.VITE_HUB_URL;
 
 interface Move {
   row: number;
   column: number;
 }
 
-export function useMoves() {
+export function useMoves(gameId: string | null, onOpponentMove: (board: any) => void) {
   const [availableMoves, setAvailableMoves] = useState<Move[]>([]);
   const [playerTurn, setPlayerTurn] = useState<string>("White");
   const [isCheck, setIsCheck] = useState<boolean>(false);
   const [isCheckmate, setIsCheckmate] = useState<boolean>(false);
+  const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
 
-  const fetchTurn = async () => {
-    try {
-      const response = await fetch(GET_TURN_API);
-      if (!response.ok) throw new Error("Failed to fetch turn");
-      const data = await response.json();
-      setPlayerTurn(data);
-      return data;
-    } catch (error) {
-      console.error("Could not fetch turn", error);
+  const [myColor, setMyColor] = useState<string | null>(null);
+  const { getUserId } = UseUser();
+
+  //Initialize user
+  useEffect(() => {
+    const assignRole = async () => {
+      if (!gameId) return;
+
+      try {
+        const response = await fetch(`${BASE_URL}/api/game/assign-player`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ gameId, userId: getUserId() }),
+        });
+        const data = await response.json();
+        setMyColor(data.color);
+      } catch (e) {
+        console.error("Failed to assign player role", e);
+      }
+    };
+
+    assignRole();
+  }, [gameId]);
+
+  // Initialize SignalR Connection
+  useEffect(() => {
+    if (!gameId) return;
+
+    const newConnection = new signalR.HubConnectionBuilder()
+      .withUrl(HUB_URL)
+      .withAutomaticReconnect()
+      .build();
+
+    setConnection(newConnection);
+  }, [gameId]);
+
+  // Start connection and Join Group
+  useEffect(() => {
+    if (connection && gameId) {
+      connection.start()
+        .then(() => {
+          connection.invoke("JoinGame", gameId);
+
+          connection.on("ReceiveMove", (data) => {
+            setPlayerTurn(data.currentTurn);
+            setIsCheck(data.isCheck);
+            setIsCheckmate(data.isCheckmate);
+            onOpponentMove(data.board);
+          });
+        })
+        .catch(e => console.error("SignalR Connection Failed: ", e));
     }
-  };
+    return () => { connection?.stop(); };
+  }, [connection, gameId, onOpponentMove]);
 
   const makeMove = async (from: Move, to: Move) => {
+    if (!gameId) return;
     try {
-      const response = await fetch(MAKE_MOVE_API, {
+      const response = await fetch(`${BASE_URL}/api/game/make-move`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ from, to }),
+        body: JSON.stringify({ gameId, userId: getUserId(), from, to }),
       });
 
       if (!response.ok) throw new Error("Failed to make move");
-
       const data = await response.json();
 
       setAvailableMoves([]);
-
       setPlayerTurn(data.currentTurn);
       setIsCheck(data.isCheck);
       setIsCheckmate(data.isCheckmate);
@@ -53,25 +97,16 @@ export function useMoves() {
   };
 
   const fetchMoves = async (row: number, column: number) => {
+    if (!gameId) return;
     try {
-      const url = `${MOVES_API}?row=${row}&column=${column}`;
-
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch moves");
-      }
+      const url = `${BASE_URL}/api/game/${gameId}/get-moves?row=${row}&column=${column}`;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Failed to fetch moves");
 
       const data: Move[] = await response.json();
       setAvailableMoves(data);
       return data;
     } catch (error) {
-      console.error("Could not fetch moves", error);
       setAvailableMoves([]);
       throw error;
     }
@@ -89,7 +124,6 @@ export function useMoves() {
     availableMoves,
     setAvailableMoves,
     playerTurn,
-    fetchTurn,
     isCheck,
     isCheckmate,
     resetMoveState

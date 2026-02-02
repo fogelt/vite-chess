@@ -1,21 +1,31 @@
 import { PrimaryContainer, PrimaryButton } from "@/components/ui"
 import { ChessBoard, ChessPlayer, ChessModal } from '@/components/features'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ChessQueen, ChessBishop } from "lucide-react";
 import { useStart, useMoves, useBoard } from "@/services";
+import { useEffect } from "react";
 
 export function GameLayout() {
   const navigate = useNavigate();
-  const { startGame, } = useStart();
-  const { fetchMoves, availableMoves, setAvailableMoves, makeMove, playerTurn, fetchTurn, isCheckmate, resetMoveState } = useMoves();
+  const { gameId } = useParams<{ gameId: string }>();
+
+  const { startGame } = useStart();
   const { board, setBoard, fetchBoard } = useBoard();
+  const { fetchMoves, availableMoves, setAvailableMoves, makeMove, playerTurn, isCheckmate, resetMoveState } = useMoves(gameId || null, setBoard);
 
   const handleStart = async () => {
     resetMoveState();
-    await startGame();
-    await fetchBoard();
-    await fetchTurn();
+    const data = await startGame();
+    if (data?.gameId) {
+      navigate(`/game/${data.gameId}`);
+    }
   };
+
+  useEffect(() => {
+    if (gameId) {
+      fetchBoard(gameId);
+    }
+  }, [gameId]);
 
   return (
     <div className="flex h-screen w-full p-8 gap-8 overflow-hidden">
