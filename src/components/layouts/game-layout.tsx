@@ -11,7 +11,9 @@ export function GameLayout() {
 
   const { startGame } = useStart();
   const { board, setBoard, fetchBoard } = useBoard();
-  const { fetchMoves, availableMoves, setAvailableMoves, makeMove, playerTurn, isCheckmate, resetMoveState } = useMoves(gameId || null, setBoard);
+  const { fetchMoves, availableMoves, setAvailableMoves, makeMove, playerTurn, isCheckmate, resetMoveState, myColor } = useMoves(gameId || null, setBoard);
+
+  const isUserBlack = myColor === "Black";
 
   const handleStart = async () => {
     resetMoveState();
@@ -57,6 +59,7 @@ export function GameLayout() {
             availableMoves={availableMoves}
             setAvailableMoves={setAvailableMoves}
             makeMove={makeMove}
+            isFlipped={isUserBlack}
           />
           {isCheckmate && (
             <ChessModal>

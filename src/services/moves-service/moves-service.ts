@@ -126,6 +126,7 @@ export function useMoves(gameId: string | null, onOpponentMove: (board: any) => 
     playerTurn,
     isCheck,
     isCheckmate,
-    resetMoveState
+    resetMoveState,
+    myColor
   };
 }

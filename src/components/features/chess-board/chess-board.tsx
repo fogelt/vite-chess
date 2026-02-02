@@ -16,7 +16,7 @@ interface ChessBoardProps {
   makeMove: (from: Move, to: Move) => Promise<any>;
 }
 
-export function ChessBoard({ board, setBoard, fetchMoves, availableMoves, setAvailableMoves, makeMove }: ChessBoardProps) {
+export function ChessBoard({ board, setBoard, fetchMoves, availableMoves, setAvailableMoves, makeMove, isFlipped = false }: ChessBoardProps & { isFlipped?: boolean }) {
   const [selectedPos, setSelectedPos] = useState<{ r: number, c: number } | null>(null);
 
   const handleDragStart = async (event: DragStartEvent) => {
@@ -58,8 +58,14 @@ export function ChessBoard({ board, setBoard, fetchMoves, availableMoves, setAva
       <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-8 grid-rows-8 ring-2 ring-white/60 shadow-2xl">
           {Array.from({ length: 64 }).map((_, index) => {
-            const row = Math.floor(index / 8);
-            const col = index % 8;
+            let row = Math.floor(index / 8);
+            let col = index % 8;
+
+            if (isFlipped) {
+              row = 7 - row;
+              col = 7 - col;
+            }
+
             const pieceData = board.find(p => p.key.row === row && p.key.column === col);
             const isAvailableMove = availableMoves.some(m => m.row === row && m.column === col);
 
