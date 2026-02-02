@@ -1,5 +1,5 @@
 import { PrimaryContainer, PrimaryButton } from "@/components/ui"
-import { ChessBoard, ChessInfo } from '@/components/features'
+import { ChessBoard, ChessPlayer } from '@/components/features'
 import { useNavigate } from "react-router-dom";
 import { ChessQueen, ChessBishop } from "lucide-react";
 import { useStart, useMoves, useBoard } from "@/services";
@@ -18,13 +18,7 @@ export function GameLayout() {
 
   return (
     <div className="flex h-screen w-full p-8 gap-8 overflow-hidden">
-
       <div className="flex flex-col w-1/3 justify-between h-full">
-
-        <div className="self-end">
-          <ChessInfo
-            playerTurn={playerTurn} />
-        </div>
 
         <PrimaryContainer className="flex flex-col gap-3">
           <PrimaryButton className="flex w-full" onClick={handleStart}>
@@ -38,15 +32,25 @@ export function GameLayout() {
         </PrimaryContainer>
       </div>
 
-      <PrimaryContainer className="flex-1 flex items-center justify-center">
-        <ChessBoard
-          board={board}
-          setBoard={setBoard}
-          fetchMoves={fetchMoves}
-          availableMoves={availableMoves}
-          setAvailableMoves={setAvailableMoves}
-          makeMove={makeMove}
-        />
+      <PrimaryContainer className="flex flex-1 flex-row items-center justify-center">
+        <div className="self-end mb-10">
+          <ChessPlayer playerColor="White" playerName="Player1" playerTurn={playerTurn} />
+        </div>
+
+        <div className="flex-shrink-0">
+          <ChessBoard
+            board={board}
+            setBoard={setBoard}
+            fetchMoves={fetchMoves}
+            availableMoves={availableMoves}
+            setAvailableMoves={setAvailableMoves}
+            makeMove={makeMove}
+          />
+        </div>
+
+        <div className="self-start mt-10">
+          <ChessPlayer playerColor="Black" playerName="Player2" playerTurn={playerTurn} />
+        </div>
       </PrimaryContainer>
 
     </div>

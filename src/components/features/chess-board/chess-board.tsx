@@ -54,7 +54,7 @@ export function ChessBoard({ board, setBoard, fetchMoves, availableMoves, setAva
   };
 
   return (
-    <div className="flex flex-col items-center p-8">
+    <div className="flex flex-col items-center p-2">
       <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-8 grid-rows-8 ring-2 ring-white/60 shadow-2xl">
           {Array.from({ length: 64 }).map((_, index) => {
