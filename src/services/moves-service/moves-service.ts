@@ -12,13 +12,14 @@ interface Move {
 export function useMoves() {
   const [availableMoves, setAvailableMoves] = useState<Move[]>([]);
   const [playerTurn, setPlayerTurn] = useState<string>("White");
+  const [isCheck, setIsCheck] = useState<boolean>(false);
+  const [isCheckmate, setIsCheckmate] = useState<boolean>(false);
 
   const fetchTurn = async () => {
     try {
       const response = await fetch(GET_TURN_API);
       if (!response.ok) throw new Error("Failed to fetch turn");
-
-      const data = await response.json(); // C# returns "White" or "Black"
+      const data = await response.json();
       setPlayerTurn(data);
       return data;
     } catch (error) {
@@ -36,12 +37,15 @@ export function useMoves() {
 
       if (!response.ok) throw new Error("Failed to make move");
 
-      const updatedBoard = await response.json();
+      const data = await response.json();
+
       setAvailableMoves([]);
 
-      await fetchTurn();
+      setPlayerTurn(data.currentTurn);
+      setIsCheck(data.isCheck);
+      setIsCheckmate(data.isCheckmate);
 
-      return updatedBoard;
+      return data.board;
     } catch (error) {
       console.error("Move Error:", error);
       throw error;
@@ -73,5 +77,14 @@ export function useMoves() {
     }
   };
 
-  return { fetchMoves, makeMove, availableMoves, setAvailableMoves, playerTurn, fetchTurn };
+  return {
+    fetchMoves,
+    makeMove,
+    availableMoves,
+    setAvailableMoves,
+    playerTurn,
+    fetchTurn,
+    isCheck,
+    isCheckmate
+  };
 }
