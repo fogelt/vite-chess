@@ -13,7 +13,7 @@ export function RegisterForm() {
     password: "",
   });
 
-  const [error, setError] = useState(""); // Track API errors for the modal
+  const [error, setError] = useState("");
 
   const [errors, setErrors] = useState({
     username: false,
@@ -30,9 +30,7 @@ export function RegisterForm() {
 
     setErrors(newErrors);
 
-    // If any field is empty, trigger the shake and stop
     if (Object.values(newErrors).some(isError => isError)) {
-      // Reset the errors after 500ms to allow for repeated shake animations
       setTimeout(() => {
         setErrors({ username: false, email: false, password: false });
       }, 500);
@@ -42,8 +40,6 @@ export function RegisterForm() {
     try {
       setError("");
       await register(form);
-      // Registration successful is often a good time for a success modal, 
-      // but for now, we'll navigate back to login as requested.
       navigate("/");
     } catch (err: any) {
       setError(err.message || "Registration failed. Please try again.");
@@ -83,8 +79,8 @@ export function RegisterForm() {
       />
 
       <div className="flex flex-col gap-3 mt-4">
-        <PrimaryButton onClick={handleRegister}>
-          {loading ? "Creating..." : "Sign Up"}
+        <PrimaryButton onClick={handleRegister} isDisabled={loading}>
+          Sign Up
         </PrimaryButton>
 
         <button
@@ -95,7 +91,6 @@ export function RegisterForm() {
         </button>
       </div>
 
-      {/* Reusing the FeedbackModal for a consistent brand feel */}
       <FeedbackModal
         isLoading={loading}
         isOpen={loading || !!error}

@@ -27,7 +27,7 @@ export function AutoDismiss({ children, delay = 2000, onDismiss }: AutoDismissPr
     <div className={
       isExiting
         ? 'animate-out fade-out slide-out-to-bottom-10 duration-500 fill-mode-forwards'
-        : 'animate-in fade-in slide-in-from-bottom-10 duration-500'
+        : 'animate-in fade-in slide-in-from-bottom-10 duration-500 fill-mode-forwards'
     }>
       {children}
     </div>

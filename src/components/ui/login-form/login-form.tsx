@@ -9,7 +9,7 @@ export function LoginForm() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); // Track API errors for the modal
+  const [error, setError] = useState("");
 
   const [errors, setErrors] = useState({
     username: false,
@@ -26,7 +26,6 @@ export function LoginForm() {
         password: passwordEmpty,
       });
 
-      // Quick reset for the shake animation (500ms like your bank project)
       setTimeout(() => {
         setErrors({ username: false, password: false });
       }, 500);
@@ -36,11 +35,9 @@ export function LoginForm() {
     try {
       setError("");
       await login({ username, password });
-      // Reset fields on success
       setUsername("");
       setPassword("");
     } catch (err: any) {
-      // Set error message for the FeedbackModal instead of a basic alert
       setError(err.message || "Invalid credentials");
     }
   };
@@ -71,14 +68,14 @@ export function LoginForm() {
 
       <div className="flex flex-col justify-center gap-1">
         <PrimaryButton
-          className="scale-[0.8] py-1 hover:scale-[0.78]"
+          className="scale-[0.8] py-1 hover:scale-[0.77]"
           onClick={handleLogin}
-        >
-          {loading ? "Authenticating..." : "Log in"}
+          isDisabled={loading}>
+          Log in
         </PrimaryButton>
 
         <PrimaryButton
-          className="scale-[0.7] py-1 hover:scale-[0.68]"
+          className="scale-[0.7] py-1 hover:scale-[0.67]"
           border={false}
           onClick={() => navigate("/register")}
         >

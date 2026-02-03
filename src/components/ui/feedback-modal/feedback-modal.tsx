@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { createPortal } from 'react-dom';
 import { PrimaryContainer, LoadingSpinner } from '@/components/ui';
 import { Check, TriangleAlert, Timer } from 'lucide-react';
 import { AutoDismiss } from '@/components/animations';
@@ -15,31 +16,25 @@ const TYPE_CONFIG = {
   success: {
     Icon: Check,
     iconColor: 'text-green-600',
-    bgColor: 'bg-green-100',
-    textColor: 'text-green-900',
   },
   error: {
     Icon: TriangleAlert,
     iconColor: 'text-red-600',
-    bgColor: 'bg-red-100',
-    textColor: 'text-red-900',
   },
   timedOut: {
     Icon: Timer,
-    iconColor: 'text-orange-600',
-    bgColor: 'bg-orange-100',
-    textColor: 'text-orange-900'
+    iconColor: 'text-amber-600',
   }
 };
 
 export const FeedbackModal = memo(({ isLoading, isOpen, message, type, onClose }: FeedbackModalProps) => {
   if (!isOpen) return null;
 
-  const { Icon, iconColor, bgColor, textColor } = TYPE_CONFIG[type];
+  const { Icon, iconColor } = TYPE_CONFIG[type];
 
-  return (
-    <div className="fixed inset-x-0 bottom-5 flex items-center justify-center z-50 pointer-events-none">
-      <div className="w-full max-w-md p-4 pointer-events-auto">
+  return createPortal(
+    <div className="fixed inset-x-0 bottom-5 flex items-center justify-center z-[9999] pointer-events-none p-4">
+      <div className="w-full max-w-md pointer-events-auto">
         <AutoDismiss delay={1500} onDismiss={onClose}>
           <PrimaryContainer>
             {isLoading ? (
@@ -49,20 +44,23 @@ export const FeedbackModal = memo(({ isLoading, isOpen, message, type, onClose }
             ) : (
               <div className="flex flex-col items-center text-center space-y-4 p-4">
                 <Icon className={iconColor} size={48} />
-                <div className={`py-2 px-4 rounded-lg ${bgColor}`}>
-                  <p className={`font-medium ${textColor}`}>{message}</p>
+                <div className={`py-2 px-4 rounded-lg`}>
+                  <p className={`font-medium ${iconColor}`}>{message}</p>
                 </div>
-              </div>)}
+              </div>
+            )}
           </PrimaryContainer>
         </AutoDismiss>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }, (prev, next) => {
   return (
     prev.isOpen === next.isOpen &&
     prev.message === next.message &&
-    prev.isLoading === next.isLoading
+    prev.isLoading === next.isLoading &&
+    prev.type === next.type
   );
 });
 

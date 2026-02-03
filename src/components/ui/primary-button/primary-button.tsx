@@ -3,9 +3,10 @@ interface PrimaryButtonProps {
   children?: React.ReactNode;
   onClick?: () => void;
   border?: boolean;
+  isDisabled?: boolean;
 }
 
-export function PrimaryButton({ className, children, onClick, border = true }: PrimaryButtonProps) {
+export function PrimaryButton({ className, children, onClick, border = true, isDisabled }: PrimaryButtonProps) {
   return (
     <button className={`
       ${border ? 'ring-2 ring-slate-200 rounded-md shadow-xl bg-slate-400' : ''}
@@ -16,7 +17,8 @@ export function PrimaryButton({ className, children, onClick, border = true }: P
       hover:scale-[0.98] duration-300
       text-2xl p-3 
       ${className}`}
-      onClick={onClick}>
+      onClick={onClick}
+      disabled={isDisabled}>
       {children}
     </button>
   );

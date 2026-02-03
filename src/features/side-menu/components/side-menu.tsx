@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { LoginForm } from "./login-form";
+import { LoginForm } from "@/components/ui";
 
 export function SideMenu() {
   const location = useLocation();
