@@ -1,14 +1,98 @@
-import { InputField, PrimaryButton } from "@/components/ui";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { InputField, PrimaryButton, FeedbackModal } from "@/components/ui";
+import { useAuth } from "@/services";
 
 export function LoginForm() {
+  const { login, loading } = useAuth();
+  const navigate = useNavigate();
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); // Track API errors for the modal
+
+  const [errors, setErrors] = useState({
+    username: false,
+    password: false,
+  });
+
+  const handleLogin = async () => {
+    const usernameEmpty = !username.trim();
+    const passwordEmpty = !password.trim();
+
+    if (usernameEmpty || passwordEmpty) {
+      setErrors({
+        username: usernameEmpty,
+        password: passwordEmpty,
+      });
+
+      // Quick reset for the shake animation (500ms like your bank project)
+      setTimeout(() => {
+        setErrors({ username: false, password: false });
+      }, 500);
+      return;
+    }
+
+    try {
+      setError("");
+      await login({ username, password });
+      // Reset fields on success
+      setUsername("");
+      setPassword("");
+    } catch (err: any) {
+      // Set error message for the FeedbackModal instead of a basic alert
+      setError(err.message || "Invalid credentials");
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4 pt-10">
-      <InputField label="Username" type="text" />
-      <InputField label="Password" type="password" />
+      <InputField
+        label="Username"
+        type="text"
+        value={username}
+        isInvalid={errors.username}
+        onChange={(val) => {
+          setUsername(val);
+          if (errors.username) setErrors((prev) => ({ ...prev, username: false }));
+        }}
+      />
+
+      <InputField
+        label="Password"
+        type="password"
+        value={password}
+        isInvalid={errors.password}
+        onChange={(val) => {
+          setPassword(val);
+          if (errors.password) setErrors((prev) => ({ ...prev, password: false }));
+        }}
+      />
+
       <div className="flex flex-col justify-center gap-1">
-        <PrimaryButton className="scale-[0.8] py-1 hover:scale-[0.78]">Log in</PrimaryButton>
-        <PrimaryButton className="scale-[0.7] py-1 hover:scale-[0.68]" border={false}>Register</PrimaryButton>
+        <PrimaryButton
+          className="scale-[0.8] py-1 hover:scale-[0.78]"
+          onClick={handleLogin}
+        >
+          {loading ? "Authenticating..." : "Log in"}
+        </PrimaryButton>
+
+        <PrimaryButton
+          className="scale-[0.7] py-1 hover:scale-[0.68]"
+          border={false}
+          onClick={() => navigate("/register")}
+        >
+          Register
+        </PrimaryButton>
       </div>
+
+      <FeedbackModal
+        isLoading={loading}
+        isOpen={loading || !!error}
+        type={error.includes("Too many requests") ? "timedOut" : "error"}
+        message={error}
+        onClose={() => setError("")}
+      />
     </div>
   );
 }

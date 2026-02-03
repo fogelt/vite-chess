@@ -27,6 +27,7 @@ export const createAppRouter = (queryClient: QueryClient) =>
       children: [
         { path: paths.game.path, lazy: () => import('./routes/app/game').then(convert(queryClient)) },
         { path: paths.home.path, lazy: () => import('./routes/app/landing').then(convert(queryClient)) },
+        { path: paths.register.path, lazy: () => import('./routes/app/register').then(convert(queryClient)) },
         {
           path: '/',
           element: <Navigate to={paths.home.path} replace />,

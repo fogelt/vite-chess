@@ -1,4 +1,5 @@
 export const paths = {
   home: { path: '/' },
-  game: { path: '/game/:gameId?' } // The '?' makes :gameId optional
+  game: { path: '/game/:gameId?' },
+  register: { path: '/register' }
 } as const;
