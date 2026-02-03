@@ -6,6 +6,18 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export function useAuth() {
   const [loading, setLoading] = useState(false);
 
+  const getUserId = () => {
+    const username = localStorage.getItem("username");
+    if (username) return username;
+
+    let id = localStorage.getItem('chess_user_id');
+    if (!id) {
+      id = `guest_${Math.random().toString(36).substring(7)}`;
+      localStorage.setItem('chess_user_id', id);
+    }
+    return id;
+  };
+
   const login = async (credentials: LoginRequest) => {
     setLoading(true);
     try {
@@ -16,11 +28,12 @@ export function useAuth() {
       });
 
       const data = await response.json();
-
       if (!response.ok) throw new Error(data.message || "Login failed");
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("username", data.username);
+
+      localStorage.removeItem('chess_user_id');
 
       return data;
     } catch (error) {
@@ -41,9 +54,7 @@ export function useAuth() {
       });
 
       const data = await response.json();
-
       if (!response.ok) throw new Error(data.message || "Registration failed");
-
       return data;
     } catch (error) {
       console.error("Registration error:", error);
@@ -56,8 +67,15 @@ export function useAuth() {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
-  return { login, register, logout, loading };
+  return {
+    login,
+    register,
+    logout,
+    getUserId,
+    loading,
+    isAuthenticated: !!localStorage.getItem("token")
+  };
 }

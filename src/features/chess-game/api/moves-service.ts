@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { UseUser } from '@/services';
+import { useAuth } from '@/services';
 import * as signalR from "@microsoft/signalr";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -18,7 +18,7 @@ export function useMoves(gameId: string | null, onOpponentMove: (board: any) => 
   const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
 
   const [myColor, setMyColor] = useState<string | null>(null);
-  const { getUserId } = UseUser();
+  const { getUserId } = useAuth();
 
   //Initialize user
   useEffect(() => {

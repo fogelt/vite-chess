@@ -16,8 +16,12 @@ export function InputField({ label, type = "text", value, onChange, className, i
         onChange={(e) => onChange?.(e.target.value)}
         placeholder=''
         className={`peer w-full p-3 ring-2 ring-white/50 rounded-lg transition-all shadow-lg bg-slate-400 outline-none
+          autofill:shadow-[0_0_0_1000px_#94a3b8_inset] 
+          autofill:text-fill-white
+          [&:-webkit-autofill]:shadow-[0_0_0_1000px_#94a3b8_inset]
+          [&:-webkit-autofill]:text-white
           ${isInvalid
-            ? 'border-orange-500 ring-2 ring-red-200'
+            ? 'ring-2 ring-red-200'
             : 'border-slate-300 focus:ring-2 focus:ring-white/80 focus:border-transparent'
           }`}
       />

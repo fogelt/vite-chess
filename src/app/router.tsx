@@ -34,7 +34,7 @@ export const createAppRouter = (queryClient: QueryClient) =>
         }
       ],
     }
-  ], { basename: '/vite-chess' });
+  ], { basename: '/vite-chess/' });
 
 export const AppRouter = () => {
   const queryClient = useQueryClient();
