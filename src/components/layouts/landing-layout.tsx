@@ -8,8 +8,7 @@ export function LandingLayout() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <PrimaryContainer>
-        <PrimaryButton className="flex" onClick={() => navigate('/game')}><ChessQueen size={25} className="mt-1 mr-5" />Play random</PrimaryButton>
-        <PrimaryButton className="flex line-through"><ChessBishop size={25} className="mt-1 mr-5" />New Lobby</PrimaryButton>
+        <PrimaryButton className="flex" onClick={() => navigate('/game')}><ChessQueen size={25} className="mt-1 mr-5 text-amber-200" />Play random</PrimaryButton>
       </PrimaryContainer>
     </div>
   );
