@@ -1,0 +1,5 @@
+export * from './chess-game/components/chess-piece/chess-piece'
+export * from './chess-game/components/chess-square/chess-square'
+export * from './chess-game/components/chess-board/chess-board'
+export * from './chess-game/components/chess-player/chess-player'
+export * from './chess-game/components/chess-modal/chess-modal'

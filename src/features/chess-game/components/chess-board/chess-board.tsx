@@ -1,4 +1,4 @@
-import { ChessPiece, ChessSquare } from "@/components/features";
+import { ChessPiece, ChessSquare } from "@/features";
 import { useState } from "react";
 import { DndContext, DragStartEvent, DragEndEvent } from '@dnd-kit/core';
 

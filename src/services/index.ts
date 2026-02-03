@@ -1,3 +1,3 @@
-export * from './board-service/board-service'
-export * from './moves-service/moves-service'
+export * from '../features/chess-game/api/board-service'
+export * from '../features/chess-game/api/moves-service'
 export * from './user-service/user-service'
