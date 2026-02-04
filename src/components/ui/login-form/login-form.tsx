@@ -66,16 +66,16 @@ export function LoginForm() {
         }}
       />
 
-      <div className="flex flex-col justify-center gap-1">
+      <div className="flex flex-col justify-center items-center gap-1">
         <PrimaryButton
-          className="scale-[0.8] py-1 hover:scale-[0.77]"
+          className="text-base w-fit py-1"
           onClick={handleLogin}
           isDisabled={loading}>
           Log in
         </PrimaryButton>
 
         <PrimaryButton
-          className="scale-[0.7] py-1 hover:scale-[0.67]"
+          className="text-base"
           border={false}
           onClick={() => navigate("/register")}
         >

@@ -1,7 +1,7 @@
 //TODO Grab from db/accounts
 //TODO Implement time control 
 import { PrimaryContainer } from "@/components/ui";
-import bgImage from '@/assets/placeholder-avatar.webp';
+import bgImage from '@/assets/avatar-1.webp';
 
 interface ChessInfoProps {
   playerColor: string | null;

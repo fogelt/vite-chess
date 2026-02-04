@@ -83,12 +83,13 @@ export function RegisterForm() {
           Sign Up
         </PrimaryButton>
 
-        <button
+        <PrimaryButton
+          className="text-sm"
+          border={false}
           onClick={() => navigate("/")}
-          className="text-sm text-slate-500 hover:text-slate-800 transition-colors"
         >
-          Already have an account? Log in
-        </button>
+          Already have an account?
+        </PrimaryButton>
       </div>
 
       <FeedbackModal

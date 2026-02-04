@@ -1,5 +1,5 @@
 import { Trophy, Coins, LogOut } from "lucide-react";
-import bgImage from '@/assets/placeholder-avatar.webp';
+import bgImage from '@/assets/avatar-1.webp';
 import { PrimaryContainer, PrimaryButton } from "@/components/ui";
 
 interface UserData {
