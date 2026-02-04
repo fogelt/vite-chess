@@ -2,7 +2,7 @@ import { PrimaryContainer, PrimaryButton } from "@/components/ui"
 import { ChessBoard, ChessPlayer, ChessModal } from '@/features'
 import { useNavigate, useParams } from "react-router-dom";
 import { useMatchmaking, useMoves, useBoard, useGameSession } from "@/features/chess-game/api";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export function GameLayout() {
   const navigate = useNavigate();
@@ -30,17 +30,26 @@ export function GameLayout() {
     eloRating: Number(localStorage.getItem("elo") || 800)
   };
 
+  const matchmakingStarted = useRef(false);
+
   useEffect(() => {
     const initMatch = async () => {
-      if (!gameId) {
+      if (gameId || matchmakingStarted.current) return;
+      matchmakingStarted.current = true;
+
+      try {
         const data = await findOrCreateMatch();
         if (data?.gameId) {
           navigate(`/game/${data.gameId}`, { replace: true });
         }
+      } catch (e) {
+        matchmakingStarted.current = false;
+        console.error("Matchmaking failed", e);
       }
     };
+
     initMatch();
-  }, [gameId]);
+  }, [gameId, findOrCreateMatch, navigate]);
 
   useEffect(() => {
     if (gameId) {
@@ -66,7 +75,7 @@ export function GameLayout() {
             <ChessModal>
               <h2 className="text-2xl mb-4">Checkmate!</h2>
               <p>{playerTurn === "White" ? "Black" : "White"} wins the game.</p>
-              <PrimaryButton onClick={() => { navigate("/") }} className="mt-6">
+              <PrimaryButton onClick={() => { navigate("/game") }} className="mt-6">
                 Play Again
               </PrimaryButton>
             </ChessModal>
