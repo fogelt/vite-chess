@@ -4,8 +4,8 @@ import bgImage from '@/assets/avatar-1.webp';
 
 interface ChessInfoProps {
   playerColor: string | null;
-  playerName: string;
-  elo: string;
+  playerName?: string;
+  elo?: string;
 }
 
 export function ChessPlayer({ playerColor, playerName, elo }: ChessInfoProps) {
@@ -21,9 +21,11 @@ export function ChessPlayer({ playerColor, playerName, elo }: ChessInfoProps) {
           <p className="text-sm font-bold uppercase tracking-tight text-black/60">
             {playerName}
           </p>
-          <p className="text-sm font-light tracking-[0.1em] text-black/60">
-            Rating: {elo}
-          </p>
+          {elo && (
+            <p className="text-sm font-light tracking-[0.1em] text-black/60">
+              Rating: {elo}
+            </p>
+          )}
         </div>
       </div>
 

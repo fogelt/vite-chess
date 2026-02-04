@@ -1,8 +1,8 @@
 import { PrimaryContainer, PrimaryButton } from "@/components/ui"
 import { ChessBoard, ChessPlayer, ChessModal } from '@/features'
 import { useNavigate, useParams } from "react-router-dom";
-import { ChessQueen, ChessBishop } from "lucide-react";
-import { useStart, useMoves, useBoard, useAuth } from "@/services";
+import { ChessQueen, ChessBishop, Users } from "lucide-react";
+import { useStart, useMoves, useBoard, useGameSession } from "@/features/chess-game/api";
 import { useEffect } from "react";
 
 export function GameLayout() {
@@ -11,17 +11,27 @@ export function GameLayout() {
 
   const { startGame } = useStart();
   const { board, setBoard, fetchBoard } = useBoard();
-  const { fetchMoves, availableMoves, setAvailableMoves, makeMove, playerTurn, isCheckmate, resetMoveState, myColor } = useMoves(gameId || null, setBoard);
+
+  const { connection, myColor, opponent, setOpponent } = useGameSession(gameId || null);
+
+  const {
+    fetchMoves,
+    availableMoves,
+    setAvailableMoves,
+    makeMove,
+    playerTurn,
+    isCheckmate
+  } = useMoves(gameId || null, connection, setBoard, setOpponent);
+
   const isUserBlack = myColor === "Black";
   const opponentColor = isUserBlack ? "White" : "Black";
 
   const userStats = {
-    username: String(localStorage.getItem("username")),
-    eloRating: Number(localStorage.getItem("elo"))
+    username: String(localStorage.getItem("username") || "Guest"),
+    eloRating: Number(localStorage.getItem("elo") || 800)
   };
 
   const handleStart = async () => {
-    resetMoveState();
     const data = await startGame();
     if (data?.gameId) {
       navigate(`/game/${data.gameId}`);
@@ -32,7 +42,7 @@ export function GameLayout() {
     if (gameId) {
       fetchBoard(gameId);
     }
-  }, [gameId]);
+  }, [gameId, fetchBoard]);
 
   return (
     <div className="flex h-screen w-full p-8 gap-8 overflow-hidden">
@@ -52,7 +62,7 @@ export function GameLayout() {
 
       <PrimaryContainer className="flex flex-1 flex-col items-center justify-center">
         <div className="relative">
-          <ChessPlayer playerColor={opponentColor} playerName={`${opponentColor || "Empty"}`} elo={userStats.eloRating.toString()} />
+          <ChessPlayer playerColor={opponentColor} playerName={`${opponent?.username || "Waiting for opponent..."}`} elo={opponent?.elo.toString()} />
           <ChessBoard
             board={board}
             setBoard={setBoard}
@@ -71,7 +81,7 @@ export function GameLayout() {
               </PrimaryButton>
             </ChessModal>
           )}
-          <ChessPlayer playerColor={myColor} playerName={`${userStats.username}`} elo={userStats.eloRating.toString()} />
+          <ChessPlayer playerColor={myColor} playerName={userStats?.username} elo={userStats.eloRating.toString()} />
         </div>
       </PrimaryContainer>
 
