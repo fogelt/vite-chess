@@ -1,5 +1,5 @@
 import { DecoBoard, PrimaryButton, PrimaryContainer } from "@/components/ui"
-import { ChessQueen, Bot, Contact } from "lucide-react";
+import { ChessQueen, Bot, Contact, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export function LandingLayout() {
@@ -13,6 +13,9 @@ export function LandingLayout() {
 
       <div className={`${wrapperClass}`}>
         <PrimaryContainer className={containerClass}>
+          <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
+            <X size={500} className="pointer-events-auto text-red-700" />
+          </div>
           <DecoBoard />
           <PrimaryButton className="flex" onClick={() => navigate('/game')}>
             <Contact size={25} className="mt-1 mr-5 text-white" /> Play friend
@@ -31,6 +34,9 @@ export function LandingLayout() {
 
       <div className={`${wrapperClass} delay-300`}>
         <PrimaryContainer className={containerClass}>
+          <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
+            <X size={500} className="pointer-events-auto text-red-700" />
+          </div>
           <DecoBoard />
           <PrimaryButton className="flex" onClick={() => navigate('/game')}>
             <Bot size={25} className="mt-1 mr-5 text-white" /> Play robot
