@@ -27,7 +27,7 @@ export function GameLayout() {
 
   const userStats = {
     username: localStorage.getItem("username") || localStorage.getItem("chess_user_id"),
-    eloRating: localStorage.getItem("elo")
+    eloRating: Number(localStorage.getItem("elo"))
   };
 
   const matchmakingStarted = useRef(false);
@@ -61,7 +61,7 @@ export function GameLayout() {
     <div className="flex h-screen w-full p-8 gap-8 overflow-hidden items-center justify-center">
       <PrimaryContainer className="flex-col items-center justify-center">
         <div className="relative">
-          <ChessPlayer playerColor={opponentColor} playerName={`${opponent?.username || "Opponent"}`} elo={opponent?.elo} />
+          <ChessPlayer playerColor={opponentColor} playerName={`${opponent?.username || "Opponent"}`} elo={opponent?.elo || null} />
           <ChessBoard
             board={board}
             setBoard={setBoard}
@@ -84,7 +84,7 @@ export function GameLayout() {
               <p className="text-xl text-white/80 font-light uppercase tracking-[0.1em] mb-4">{playerTurn === "White" ? "Black" : "White"} wins the game.</p>
             </ChessModal>
           )}
-          <ChessPlayer playerColor={myColor} playerName={userStats.username} elo={userStats.eloRating} />
+          <ChessPlayer playerColor={myColor} playerName={userStats.username} elo={userStats.eloRating || null} />
         </div>
       </PrimaryContainer>
 

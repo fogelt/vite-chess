@@ -5,7 +5,7 @@ import bgImage from '@/assets/avatar-1.webp';
 interface ChessInfoProps {
   playerColor: string | null;
   playerName?: string | null;
-  elo?: string | null;
+  elo?: number | null;
 }
 
 export function ChessPlayer({ playerColor, playerName, elo }: ChessInfoProps) {
