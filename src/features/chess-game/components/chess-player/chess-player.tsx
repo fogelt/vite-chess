@@ -1,4 +1,3 @@
-//TODO Grab from db/accounts
 //TODO Implement time control 
 import { PrimaryContainer } from "@/components/ui";
 import bgImage from '@/assets/avatar-1.webp';
@@ -6,35 +5,34 @@ import bgImage from '@/assets/avatar-1.webp';
 interface ChessInfoProps {
   playerColor: string | null;
   playerName: string;
-  playerTurn: string;
+  elo: string;
 }
 
-export function ChessPlayer({ playerColor, playerName, playerTurn }: ChessInfoProps) {
-
+export function ChessPlayer({ playerColor, playerName, elo }: ChessInfoProps) {
   return (
-    <PrimaryContainer className="flex flex-col items-center justify-center">
-      <div className="flex flex-row items-center gap-2 min-w-20">
+    <div className="flex flex-row items-center justify-between w-full p-2 bg-slate-100/50 rounded-lg">
+      <div className="flex flex-row items-center gap-3">
         <span
-          className={`w-16 h-16 rounded-full transition-all duration-500 shadow-lg inline-block bg-cover bg-center ring-2 ring-inset
-            ${playerColor === "White"
-              ? 'ring-white'
-              : 'ring-black'
-            }
-          ${playerTurn === playerColor
-              ? ''
-              : ''
-            }`}
+          className={`w-12 h-12 rounded-full transition-all duration-500 shadow-md bg-cover bg-center ring-2
+            ${playerColor === "White" ? 'ring-white' : 'ring-black'}`}
           style={{ backgroundImage: `url(${bgImage})` }}
         />
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-widest opacity-60">
+        <div className="flex flex-col">
+          <p className="text-sm font-bold uppercase tracking-tight text-black/60">
             {playerName}
           </p>
-          <p className="text-xs text-amber-200 font-semibold uppercase tracking-widest opacity-60">
-            Time: 5:00
+          <p className="text-sm font-light tracking-[0.1em] text-black/60">
+            Rating: {elo}
           </p>
         </div>
       </div>
-    </PrimaryContainer>
+
+      <PrimaryContainer className="ml-auto px-4 py-2 rounded-md shadow-inner">
+        <p className="text-lg font-mono text-white/60 tracking-tighter">
+          05:00
+        </p>
+      </PrimaryContainer>
+
+    </div>
   );
 }

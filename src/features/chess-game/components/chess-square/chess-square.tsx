@@ -8,7 +8,7 @@ export function ChessSquare({ row, col, children, isAvailableMove }: any) {
   return (
     <div
       ref={setNodeRef}
-      className={`w-20 h-20 flex items-center justify-center relative
+      className={`w-[4.5em] h-[4.5em] flex items-center justify-center relative
         ${(row + col) % 2 === 0 ? 'bg-white/30' : 'bg-black/30'}
         ${isOver && isAvailableMove ? 'ring-2 ring-white ring-inset' : ''}
       `}

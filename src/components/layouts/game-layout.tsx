@@ -2,7 +2,7 @@ import { PrimaryContainer, PrimaryButton } from "@/components/ui"
 import { ChessBoard, ChessPlayer, ChessModal } from '@/features'
 import { useNavigate, useParams } from "react-router-dom";
 import { ChessQueen, ChessBishop } from "lucide-react";
-import { useStart, useMoves, useBoard } from "@/services";
+import { useStart, useMoves, useBoard, useAuth } from "@/services";
 import { useEffect } from "react";
 
 export function GameLayout() {
@@ -12,9 +12,13 @@ export function GameLayout() {
   const { startGame } = useStart();
   const { board, setBoard, fetchBoard } = useBoard();
   const { fetchMoves, availableMoves, setAvailableMoves, makeMove, playerTurn, isCheckmate, resetMoveState, myColor } = useMoves(gameId || null, setBoard);
-
   const isUserBlack = myColor === "Black";
   const opponentColor = isUserBlack ? "White" : "Black";
+
+  const userStats = {
+    username: String(localStorage.getItem("username")),
+    eloRating: Number(localStorage.getItem("elo"))
+  };
 
   const handleStart = async () => {
     resetMoveState();
@@ -46,13 +50,9 @@ export function GameLayout() {
         </PrimaryContainer>
       </div>
 
-      <PrimaryContainer className="flex flex-1 flex-row items-center justify-center">
-        <div className="flex flex-col h-full relative items-center justify-between py-12">
-          <ChessPlayer playerColor={opponentColor} playerName={`${opponentColor} player`} playerTurn={playerTurn} />
-          <ChessPlayer playerColor={myColor} playerName={`${myColor} player`} playerTurn={playerTurn} />
-        </div>
-
-        <div className="relative flex-shrink-0 h-fit w-fit">
+      <PrimaryContainer className="flex flex-1 flex-col items-center justify-center">
+        <div className="relative">
+          <ChessPlayer playerColor={opponentColor} playerName={`${opponentColor || "Empty"}`} elo={userStats.eloRating.toString()} />
           <ChessBoard
             board={board}
             setBoard={setBoard}
@@ -71,6 +71,7 @@ export function GameLayout() {
               </PrimaryButton>
             </ChessModal>
           )}
+          <ChessPlayer playerColor={myColor} playerName={`${userStats.username}`} elo={userStats.eloRating.toString()} />
         </div>
       </PrimaryContainer>
 
