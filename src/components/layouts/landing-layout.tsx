@@ -15,7 +15,7 @@ export function LandingLayout() {
         <PrimaryContainer className={containerClass}>
           <DecoBoard />
           <PrimaryButton className="flex" onClick={() => navigate('/game')}>
-            <Contact size={25} className="mt-1 mr-5 text-amber-300" /> Play friend
+            <Contact size={25} className="mt-1 mr-5 text-white" /> Play friend
           </PrimaryButton>
         </PrimaryContainer>
       </div>
@@ -24,7 +24,7 @@ export function LandingLayout() {
         <PrimaryContainer className={containerClass}>
           <DecoBoard />
           <PrimaryButton className="flex" onClick={() => navigate('/game')}>
-            <ChessQueen size={25} className="mt-1 mr-5 text-amber-300" /> Play random
+            <ChessQueen size={25} className="mt-1 mr-5 text-white" /> Play random
           </PrimaryButton>
         </PrimaryContainer>
       </div>
@@ -33,7 +33,7 @@ export function LandingLayout() {
         <PrimaryContainer className={containerClass}>
           <DecoBoard />
           <PrimaryButton className="flex" onClick={() => navigate('/game')}>
-            <Bot size={25} className="mt-1 mr-5 text-amber-300" /> Play robot
+            <Bot size={25} className="mt-1 mr-5 text-white" /> Play robot
           </PrimaryButton>
         </PrimaryContainer>
       </div>

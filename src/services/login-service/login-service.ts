@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { LoginRequest, RegisterRequest } from "@/types";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export function useAuth() {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const getUserId = () => {
     const username = localStorage.getItem("username");
@@ -29,9 +31,11 @@ export function useAuth() {
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Login failed");
-
+      console.log(data)
       localStorage.setItem("token", data.token);
       localStorage.setItem("username", data.username);
+      localStorage.setItem("elo", data.elo.toString());
+      localStorage.setItem("coins", data.coins.toString());
 
       localStorage.removeItem('chess_user_id');
 
@@ -41,6 +45,7 @@ export function useAuth() {
       throw error;
     } finally {
       setLoading(false);
+      navigate('/');
     }
   };
 
@@ -67,8 +72,9 @@ export function useAuth() {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
-    window.location.href = "/";
+    navigate('/');
   };
+
 
   return {
     login,
