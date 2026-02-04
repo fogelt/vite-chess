@@ -6,9 +6,10 @@ interface ChessInfoProps {
   playerColor: string | null;
   playerName?: string | null;
   elo?: number | null;
+  timeRemaining: string;
 }
 
-export function ChessPlayer({ playerColor, playerName, elo }: ChessInfoProps) {
+export function ChessPlayer({ playerColor, playerName, elo, timeRemaining }: ChessInfoProps) {
   return (
     <div className="flex flex-row items-center justify-between w-full p-2 bg-slate-100/50 rounded-lg">
       <div className="flex flex-row items-center gap-3">
@@ -33,7 +34,7 @@ export function ChessPlayer({ playerColor, playerName, elo }: ChessInfoProps) {
 
       <PrimaryContainer className="ml-auto px-4 py-2 rounded-md shadow-inner">
         <p className="text-lg font-mono text-white/60 tracking-tighter">
-          05:00
+          {timeRemaining}
         </p>
       </PrimaryContainer>
 

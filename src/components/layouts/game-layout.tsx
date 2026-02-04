@@ -3,6 +3,7 @@ import { ChessBoard, ChessPlayer, ChessModal } from '@/features'
 import { useNavigate, useParams } from "react-router-dom";
 import { useMatchmaking, useMoves, useBoard, useGameSession } from "@/features/chess-game/api";
 import { useEffect, useRef } from "react";
+import { TimeFormatter } from "@/app/utils";
 
 export function GameLayout() {
   const navigate = useNavigate();
@@ -19,11 +20,21 @@ export function GameLayout() {
     setAvailableMoves,
     makeMove,
     playerTurn,
-    isCheckmate
+    isCheckmate,
+    whiteTime,
+    blackTime,
+    setWhiteTime,
+    setBlackTime
   } = useMoves(gameId || null, connection, setBoard, setOpponent);
 
   const isUserBlack = myColor === "Black";
   const opponentColor = isUserBlack ? "White" : "Black";
+
+  const formattedWhiteTime = TimeFormatter(whiteTime);
+  const formattedBlackTime = TimeFormatter(blackTime);
+
+  const myTimeDisplay = isUserBlack ? formattedBlackTime : formattedWhiteTime;
+  const opponentTimeDisplay = isUserBlack ? formattedWhiteTime : formattedBlackTime;
 
   const userStats = {
     username: localStorage.getItem("username") || localStorage.getItem("chess_user_id"),
@@ -31,6 +42,20 @@ export function GameLayout() {
   };
 
   const matchmakingStarted = useRef(false);
+
+  useEffect(() => {
+    if (!gameId || isCheckmate || !opponent) return;
+
+    const interval = setInterval(() => {
+      if (playerTurn === "White") {
+        setWhiteTime((prev) => Math.max(0, prev - 100));
+      } else {
+        setBlackTime((prev) => Math.max(0, prev - 100));
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [playerTurn, isCheckmate, gameId]);
 
   useEffect(() => {
     const initMatch = async () => {
@@ -61,7 +86,7 @@ export function GameLayout() {
     <div className="flex h-screen w-full p-8 gap-8 overflow-hidden items-center justify-center">
       <PrimaryContainer className="flex-col items-center justify-center">
         <div className="relative">
-          <ChessPlayer playerColor={opponentColor} playerName={`${opponent?.username || "Opponent"}`} elo={opponent?.elo || null} />
+          <ChessPlayer playerColor={opponentColor} playerName={`${opponent?.username || "Opponent"}`} elo={opponent?.elo || null} timeRemaining={opponentTimeDisplay} />
           <ChessBoard
             board={board}
             setBoard={setBoard}
@@ -84,7 +109,7 @@ export function GameLayout() {
               <p className="text-xl text-white/80 font-light uppercase tracking-[0.1em] mb-4">{playerTurn === "White" ? "Black" : "White"} wins the game.</p>
             </ChessModal>
           )}
-          <ChessPlayer playerColor={myColor} playerName={userStats.username} elo={userStats.eloRating || null} />
+          <ChessPlayer playerColor={myColor} playerName={userStats.username} elo={userStats.eloRating || null} timeRemaining={myTimeDisplay} />
         </div>
       </PrimaryContainer>
 

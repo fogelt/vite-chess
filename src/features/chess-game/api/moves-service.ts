@@ -12,6 +12,9 @@ export function useMoves(gameId: string | null, connection: any, onOpponentMove:
   const [isCheckmate, setIsCheckmate] = useState<boolean>(false);
   const { getUserId } = useAuth();
 
+  const [whiteTime, setWhiteTime] = useState<number>(600000);
+  const [blackTime, setBlackTime] = useState<number>(600000);
+
   // Handle SignalR Listeners
   useEffect(() => {
     if (!connection) return;
@@ -45,6 +48,8 @@ export function useMoves(gameId: string | null, connection: any, onOpponentMove:
     setPlayerTurn(data.currentTurn);
     setIsCheck(data.isCheck);
     setIsCheckmate(data.isCheckmate);
+    setWhiteTime(data.whiteTimeMs);
+    setBlackTime(data.blackTimeMs);
     return data.board;
   };
 
@@ -56,5 +61,5 @@ export function useMoves(gameId: string | null, connection: any, onOpponentMove:
     return data;
   };
 
-  return { fetchMoves, makeMove, availableMoves, setAvailableMoves, playerTurn, isCheck, isCheckmate };
+  return { fetchMoves, makeMove, availableMoves, setAvailableMoves, playerTurn, isCheck, isCheckmate, whiteTime, blackTime, setWhiteTime, setBlackTime };
 }
