@@ -8,15 +8,15 @@ const HUB_URL = import.meta.env.VITE_HUB_URL;
 export function useGameSession(gameId: string | null) {
   const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
   const [myColor, setMyColor] = useState<string | null>(null);
-  const [opponent, setOpponent] = useState<{ username: string, elo: number } | null>(null);
+  const [opponent, setOpponent] = useState<{ username: string, elo: string } | null>(null);
   const { getUserId } = useAuth();
 
   useEffect(() => {
     if (!gameId) return;
 
     const assignRole = async () => {
-      const username = localStorage.getItem("username") || "Guest";
-      const elo = Number(localStorage.getItem("elo")) || 1200;
+      const username = localStorage.getItem("username");
+      const elo = localStorage.getItem("elo");
 
       const response = await fetch(`${BASE_URL}/api/game/assign-player`, {
         method: "POST",
@@ -37,8 +37,8 @@ export function useGameSession(gameId: string | null) {
 
     newConnection.start().then(() => {
       newConnection.invoke("JoinGame", gameId,
-        localStorage.getItem("username") || "Guest",
-        Number(localStorage.getItem("elo")) || 800
+        localStorage.getItem("username"),
+        localStorage.getItem("elo")
       );
     });
 

@@ -8,8 +8,8 @@ interface ChessModalProps {
 export function ChessModal({ className, children }: ChessModalProps) {
   return (
     <div className="absolute inset-0 z-[100] flex items-center justify-center">
-      <PrimaryContainer className={`min-w-[300px] p-8 text-center ${className}`}>
-        <div className="text-lg font-bold">
+      <PrimaryContainer className={`min-w-[300px] p-8 text-center`}>
+        <div className={`text-lg font-bold ${className}`}>
           {children}
         </div>
       </PrimaryContainer>
