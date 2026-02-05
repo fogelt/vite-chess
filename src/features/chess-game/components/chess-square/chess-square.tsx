@@ -1,6 +1,6 @@
 import { useDroppable } from '@dnd-kit/core';
 
-export function ChessSquare({ row, col, children, isAvailableMove }: any) {
+export function ChessSquare({ row, col, children, isAvailableMove, isSelected, onClick }: any) {
   const { setNodeRef, isOver } = useDroppable({
     id: `${row}-${col}`,
   });
@@ -8,8 +8,10 @@ export function ChessSquare({ row, col, children, isAvailableMove }: any) {
   return (
     <div
       ref={setNodeRef}
+      onClick={onClick}
       className={`w-[4.5em] h-[4.5em] flex items-center justify-center relative
         ${(row + col) % 2 === 0 ? 'bg-white/30' : 'bg-black/30'}
+        ${isSelected ? 'ring-2 ring-amber-300 ring-inset z-10' : ''}
         ${isOver && isAvailableMove ? 'ring-2 ring-white ring-inset' : ''}
       `}
     >

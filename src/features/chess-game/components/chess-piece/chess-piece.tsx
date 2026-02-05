@@ -10,7 +10,7 @@ const PIECE_ICONS: Record<string, React.ElementType> = {
   King: ChessKing,
 };
 
-export function ChessPiece({ type, color, id }: { type: string, color: string, id: string }) {
+export function ChessPiece({ type, color, id, onClick }: { type: string, color: string, id: string, onClick?: () => void }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: id,
   });
@@ -28,6 +28,10 @@ export function ChessPiece({ type, color, id }: { type: string, color: string, i
       style={style}
       {...listeners}
       {...attributes}
+      onPointerDown={(e) => {
+        listeners?.onPointerDown(e);
+        if (onClick) onClick();
+      }}
       className={`z-50 ${isDragging ? 'opacity-50' : ''} cursor-grab active:cursor-grabbing`}
     >
       <Icon size={40} className={color === 'White' ? 'stroke-white' : 'stroke-black'} />
