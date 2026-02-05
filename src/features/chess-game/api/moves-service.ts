@@ -10,6 +10,7 @@ export function useMoves(gameId: string | null, connection: any, onOpponentMove:
   const [playerTurn, setPlayerTurn] = useState<string>("White");
   const [isCheck, setIsCheck] = useState<boolean>(false);
   const [isCheckmate, setIsCheckmate] = useState<boolean>(false);
+  const [gameOver, setGameOver] = useState<{ winner: string; reason: string } | null>(null);
   const { getUserId } = useAuth();
 
   const [whiteTime, setWhiteTime] = useState<number>(600000);
@@ -24,6 +25,15 @@ export function useMoves(gameId: string | null, connection: any, onOpponentMove:
       setIsCheck(data.isCheck);
       setIsCheckmate(data.isCheckmate);
       onOpponentMove(data.board);
+      setWhiteTime(data.whiteTimeMs);
+      setBlackTime(data.blackTimeMs);
+
+      if (data.isGameOver) {
+        setGameOver({
+          winner: data.winner,
+          reason: data.reason
+        });
+      }
     });
 
     connection.on("OpponentJoined", (data: any) => {
@@ -50,6 +60,9 @@ export function useMoves(gameId: string | null, connection: any, onOpponentMove:
     setIsCheckmate(data.isCheckmate);
     setWhiteTime(data.whiteTimeMs);
     setBlackTime(data.blackTimeMs);
+    if (data.isGameOver) {
+      setGameOver({ winner: data.winner, reason: data.reason });
+    }
     return data.board;
   };
 
@@ -61,5 +74,5 @@ export function useMoves(gameId: string | null, connection: any, onOpponentMove:
     return data;
   };
 
-  return { fetchMoves, makeMove, availableMoves, setAvailableMoves, playerTurn, isCheck, isCheckmate, whiteTime, blackTime, setWhiteTime, setBlackTime };
+  return { fetchMoves, makeMove, availableMoves, setAvailableMoves, playerTurn, isCheck, isCheckmate, whiteTime, blackTime, setWhiteTime, setBlackTime, gameOver };
 }

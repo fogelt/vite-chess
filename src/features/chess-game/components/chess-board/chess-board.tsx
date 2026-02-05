@@ -61,7 +61,6 @@ export function ChessBoard({ board, setBoard, fetchMoves, availableMoves, setAva
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
 
-    // If we didn't drop over anything, clear selection (standard drag behavior)
     if (!over) {
       setSelectedPos(null);
       setAvailableMoves([]);
@@ -70,8 +69,6 @@ export function ChessBoard({ board, setBoard, fetchMoves, availableMoves, setAva
 
     const [toRow, toCol] = (over.id as string).replace('square-', '').split('-').map(Number);
     const [fromRow, fromCol] = (active.id as string).replace('piece-', '').split('-').map(Number);
-
-    // Check if it was a real drag (moved to a different square)
     const hasMoved = toRow !== fromRow || toCol !== fromCol;
 
     if (hasMoved) {
@@ -84,13 +81,9 @@ export function ChessBoard({ board, setBoard, fetchMoves, availableMoves, setAva
         );
         if (updatedBoard) setBoard(updatedBoard);
       }
-
-      // ONLY clear selection if they actually dragged it to a new spot
       setSelectedPos(null);
       setAvailableMoves([]);
     }
-    // If they didn't move (just a click), we do NOTHING here. 
-    // Let the onPointerDown/onClick handle the selection toggle.
   };
 
   return (

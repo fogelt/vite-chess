@@ -17,7 +17,7 @@ export function useGameSession(gameId: string | null) {
     const username = localStorage.getItem("username") || localStorage.getItem("chess_user_id") || "Guest";
     const elo = Number(localStorage.getItem("elo"));
 
-    const assignRole = async () => {
+    const initSession = async () => {
       try {
         const response = await fetch(`${BASE_URL}/api/game/assign-player`, {
           method: "POST",
@@ -30,27 +30,39 @@ export function useGameSession(gameId: string | null) {
       } catch (err) {
         console.error("Failed to assign role:", err);
       }
+
+      const newConnection = new signalR.HubConnectionBuilder()
+        .withUrl(HUB_URL)
+        .withAutomaticReconnect()
+        .build();
+
+      try {
+        await newConnection.start();
+        setConnection(newConnection);
+      } catch (err) {
+        console.error("SignalR Connection Error: ", err);
+      }
     };
 
-    assignRole();
-
-    const newConnection = new signalR.HubConnectionBuilder()
-      .withUrl(HUB_URL)
-      .withAutomaticReconnect()
-      .build();
-
-    newConnection.start().then(() => {
-      newConnection.invoke("JoinGame", gameId, username, elo);
-    }).catch(err => console.error("SignalR Connection Error: ", err));
-
-    setConnection(newConnection);
+    initSession();
 
     return () => {
-      newConnection.stop();
+      if (connection) connection.stop();
       setMyColor(null);
       setOpponent(null);
     };
   }, [gameId]);
+
+  useEffect(() => {
+    if (connection?.state === signalR.HubConnectionState.Connected && gameId && myColor) {
+      const userId = getUserId();
+      const username = localStorage.getItem("username") || localStorage.getItem("chess_user_id") || "Guest";
+      const elo = Number(localStorage.getItem("elo"));
+
+      connection.invoke("JoinGame", gameId, userId, username, elo)
+        .catch(err => console.error("JoinGame Error:", err));
+    }
+  }, [connection, gameId, myColor]);
 
   return { connection, myColor, opponent, setOpponent };
 }
