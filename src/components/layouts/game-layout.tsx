@@ -1,4 +1,4 @@
-import { PrimaryContainer, Spinner } from "@/components/ui"
+import { PrimaryButton, PrimaryContainer, Spinner } from "@/components/ui"
 import { ChessBoard, ChessPlayer, ChessModal } from '@/features'
 import { useNavigate, useParams } from "react-router-dom";
 import { useMatchmaking, useMoves, useBoard, useGameSession } from "@/features/chess-game/api";
@@ -105,37 +105,30 @@ export function GameLayout() {
             </ChessModal>
           )}
 
-          {/* 2. Game Over Handler (Checkmate, Timeout, Abandonment, Stalemate) */}
           {gameOver && (
             <ChessModal className="flex flex-col justify-center items-center text-center">
               {gameOver.winner === "Draw" ? (
                 <>
-                  <h2 className="text-4xl text-white font-bold uppercase tracking-widest mb-2">Draw</h2>
-                  <p className="text-xl text-white/60 font-light uppercase tracking-[0.1em]">
+                  <h2 className="text-2xl text-white/80 font-light uppercase tracking-[0.1em] mb-4">Draw</h2>
+                  <p className="text-xl text-white/80 font-light uppercase tracking-[0.1em] mb-4">
                     The game ended in a {gameOver.reason}
                   </p>
                 </>
               ) : (
                 <>
-                  <h2 className="text-4xl text-white font-bold uppercase tracking-widest mb-2">
-                    {gameOver.winner === myColor ? "Victory" : "Defeat"}
-                  </h2>
-                  <div className={`h-1 w-20 mb-4 ${gameOver.winner === myColor ? 'bg-green-500' : 'bg-red-500'}`} />
-                  <p className="text-xl text-white/80 font-medium uppercase tracking-[0.1em]">
-                    {gameOver.winner} wins!
+                  <p className="text-2xl text-white/80 font-light uppercase tracking-[0.1em] mb-4">
+                    {gameOver.reason}
                   </p>
-                  <p className="text-sm text-white/40 uppercase tracking-[0.2em] mt-2">
-                    Reason: {gameOver.reason}
+                  <p className="text-sm text-white/40 uppercase tracking-[0.2em]">
+                    {gameOver.winner} wins!
                   </p>
                 </>
               )}
-
-              <button
-                onClick={() => window.location.href = '/'}
-                className="mt-8 px-8 py-2 border border-white/20 text-white hover:bg-white hover:text-black transition-all duration-300 uppercase tracking-widest text-sm"
-              >
+              <PrimaryButton
+                onClick={() => navigate('/')}
+                className="mt-8 text-sm">
                 Return to Lobby
-              </button>
+              </PrimaryButton>
             </ChessModal>
           )}
           <ChessPlayer playerColor={myColor} playerName={userStats.username} elo={userStats.eloRating || null} timeRemaining={myTimeDisplay} />
