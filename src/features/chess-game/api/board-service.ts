@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -11,7 +11,7 @@ export interface ChessPiece {
 export function useBoard() {
   const [board, setBoard] = useState<ChessPiece[]>([]);
 
-  const fetchBoard = async (gameId: string) => {
+  const fetchBoard = useCallback(async (gameId: string) => {
     if (!gameId) return;
     try {
       const response = await fetch(`${BASE_URL}/api/game/${gameId}/board`, {
@@ -25,7 +25,7 @@ export function useBoard() {
     } catch (error) {
       console.error("Error getting board:", error);
     }
-  };
+  }, []);
 
   return { board, setBoard, fetchBoard };
 }
