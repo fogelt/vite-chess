@@ -34,7 +34,8 @@ export function ChessPiece({ type, color, id, onClick }: { type: string, color: 
       }}
       className={`z-50 ${isDragging ? 'opacity-50' : ''} cursor-grab active:cursor-grabbing`}
     >
-      <Icon size={40} className={color === 'White' ? 'stroke-white' : 'stroke-black'} />
+      <Icon
+        className={`w-9 h-9 lg:w-10 lg:h-10 ${color === 'White' ? 'stroke-white' : 'stroke-black'}`} />
     </div>
   );
 }
