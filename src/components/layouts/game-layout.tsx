@@ -18,6 +18,7 @@ export function GameLayout() {
     fetchMoves,
     availableMoves,
     setAvailableMoves,
+    setAllLegalMoves,
     makeMove,
     playerTurn,
     isCheckmate,
@@ -45,18 +46,24 @@ export function GameLayout() {
   const matchmakingStarted = useRef(false);
 
   useEffect(() => {
-    if (!gameId || isCheckmate || !opponent) return;
+    if (!gameId || isCheckmate || !opponent || gameOver) return;
+
+    let lastTick = Date.now();
 
     const interval = setInterval(() => {
+      const now = Date.now();
+      const deltaTime = now - lastTick;
+      lastTick = now;
+
       if (playerTurn === "White") {
-        setWhiteTime((prev) => Math.max(0, prev - 100));
+        setWhiteTime((prev) => Math.max(0, prev - deltaTime));
       } else {
-        setBlackTime((prev) => Math.max(0, prev - 100));
+        setBlackTime((prev) => Math.max(0, prev - deltaTime));
       }
     }, 100);
 
     return () => clearInterval(interval);
-  }, [playerTurn, isCheckmate, gameId]);
+  }, [playerTurn, isCheckmate, gameId, gameOver, opponent]);
 
   useEffect(() => {
     const initMatch = async () => {
@@ -78,10 +85,22 @@ export function GameLayout() {
   }, [gameId, findOrCreateMatch, navigate]);
 
   useEffect(() => {
-    if (gameId) {
-      fetchBoard(gameId);
-    }
-  }, [gameId, fetchBoard]);
+    const initGame = async () => {
+      if (gameId) {
+        const data = await fetchBoard(gameId);
+
+        if (data) {
+          if (data.allLegalMoves) {
+            setAllLegalMoves(data.allLegalMoves);
+          }
+          if (data.whiteTimeMs) setWhiteTime(data.whiteTimeMs);
+          if (data.blackTimeMs) setBlackTime(data.blackTimeMs);
+        }
+      }
+    };
+
+    initGame();
+  }, [gameId, fetchBoard, setAllLegalMoves, setWhiteTime, setBlackTime]);
 
   return (
     <div className="flex h-screen w-full p-8 gap-8 overflow-hidden items-center justify-center">

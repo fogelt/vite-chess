@@ -20,7 +20,7 @@ export function useBoard() {
       if (!response.ok) throw new Error("Failed to fetch board");
 
       const data = await response.json();
-      setBoard(data);
+      setBoard(data.board);
       return data;
     } catch (error) {
       console.error("Error getting board:", error);
