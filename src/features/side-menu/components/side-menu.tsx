@@ -1,6 +1,8 @@
 import { useLocation } from "react-router-dom";
 import { useAuth } from "@/services";
-import { LoginForm, UserDashboard } from "@/components/ui";
+import { LoginForm } from "./login-form/login-form";
+import { UserDashboard } from "./user-dashboard/user-dashboard";
+import { FriendButton } from "./friend-button/friend-button";
 
 export function SideMenu() {
   const location = useLocation();

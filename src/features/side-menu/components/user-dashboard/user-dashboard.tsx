@@ -1,6 +1,7 @@
-import { Trophy, Coins, LogOut } from "lucide-react";
+import { Trophy, Coins, LogOut, Contact, Grip } from "lucide-react";
 import bgImage from '@/assets/avatar-1.webp';
 import { PrimaryContainer, PrimaryButton } from "@/components/ui";
+import { FriendButton } from "../friend-button/friend-button";
 
 interface UserData {
   username: string;
@@ -35,6 +36,14 @@ export function UserDashboard({ user, onLogout }: { user: UserData, onLogout: ()
             <span className="text-white/70 font-light text-lg uppercase tracking-[0.2em]">Coins</span>
           </div>
           <span className="text-white/70 font-light text-lg uppercase tracking-[0.2em] font-mono">{user.coins}</span>
+        </PrimaryContainer>
+        <PrimaryContainer className="rounded-lg flex flex-col h-40 items-start justify-start py-2">
+          <div className="flex items-center justify-center space-x-3">
+            <Contact className="text-amber-300" size={20} />
+            <span className="text-white/70 font-light text-lg uppercase tracking-[0.2em]">Friends</span>
+          </div>
+          <FriendButton />
+
         </PrimaryContainer>
       </div>
 

@@ -70,8 +70,7 @@ export function useAuth() {
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
+    localStorage.clear();
     navigate('/');
   };
 
