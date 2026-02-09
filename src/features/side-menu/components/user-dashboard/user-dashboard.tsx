@@ -42,7 +42,12 @@ export function UserDashboard({ user, onLogout }: { user: UserData, onLogout: ()
             <Contact className="text-amber-300" size={20} />
             <span className="text-white/70 font-light text-lg uppercase tracking-[0.2em]">Friends</span>
           </div>
-          <FriendButton />
+          <FriendButton>
+            Placeholder friend
+          </FriendButton>
+          <FriendButton>
+            Placeholder friend
+          </FriendButton>
 
         </PrimaryContainer>
       </div>
