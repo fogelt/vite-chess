@@ -11,6 +11,8 @@ export function GameLayout() {
   const navigate = useNavigate();
   const [promotionMove, setPromotionMove] = useState<{ from: any; to: any } | null>(null);
   const { gameId } = useParams<{ gameId: string }>();
+  const processingId = useRef<string | null>(null);
+  const lastFetchedId = useRef<string | null>(null);
 
   const { findOrCreateMatch } = useMatchmaking();
   const { board, setBoard, fetchBoard } = useBoard();
@@ -70,13 +72,30 @@ export function GameLayout() {
 
   useEffect(() => {
     const initMatch = async () => {
-      if (gameId || matchmakingStarted.current) return;
-      matchmakingStarted.current = true;
+      if (gameId && gameId === lastFetchedId.current) return;
+      if (matchmakingStarted.current) return;
 
       try {
-        const data = await findOrCreateMatch();
-        if (data?.gameId) {
-          navigate(`/game/${data.gameId}`, { replace: true });
+        if (gameId) {
+          const data = await fetchBoard(gameId);
+
+          if (data && !data.isGameOver) {
+            lastFetchedId.current = gameId;
+            if (data.allLegalMoves) setAllLegalMoves(data.allLegalMoves);
+            if (data.whiteTimeMs) setWhiteTime(data.whiteTimeMs);
+            if (data.blackTimeMs) setBlackTime(data.blackTimeMs);
+            return;
+          }
+
+          lastFetchedId.current = null;
+        }
+
+        matchmakingStarted.current = true;
+        const matchData = await findOrCreateMatch(userStats.username!);
+
+        if (matchData?.gameId) {
+          matchmakingStarted.current = false;
+          navigate(`/game/${matchData.gameId}`, { replace: true });
         }
       } catch (e) {
         matchmakingStarted.current = false;
@@ -85,25 +104,7 @@ export function GameLayout() {
     };
 
     initMatch();
-  }, [gameId, findOrCreateMatch, navigate]);
-
-  useEffect(() => {
-    const initGame = async () => {
-      if (gameId) {
-        const data = await fetchBoard(gameId);
-
-        if (data) {
-          if (data.allLegalMoves) {
-            setAllLegalMoves(data.allLegalMoves);
-          }
-          if (data.whiteTimeMs) setWhiteTime(data.whiteTimeMs);
-          if (data.blackTimeMs) setBlackTime(data.blackTimeMs);
-        }
-      }
-    };
-
-    initGame();
-  }, [gameId, fetchBoard, setAllLegalMoves, setWhiteTime, setBlackTime]);
+  }, [gameId, fetchBoard, findOrCreateMatch, navigate, setAllLegalMoves, setWhiteTime, setBlackTime]);
 
   const handlePromotionSelect = async (piece: PromotionPiece) => {
     if (!promotionMove) return;

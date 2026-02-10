@@ -1,22 +1,16 @@
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export function useMatchmaking() {
-  const findOrCreateMatch = async () => {
+  const findOrCreateMatch = async (userId: string) => {
     try {
-      const findRes = await fetch(`${BASE_URL}/api/game/find-match`);
-
-      if (findRes.ok) {
-        const data = await findRes.json();
-        return data;
-      }
-
-      const createRes = await fetch(`${BASE_URL}/api/game/start-game`, {
-        method: "POST"
+      const response = await fetch(`${BASE_URL}/api/game/find-or-create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId })
       });
 
-      if (!createRes.ok) throw new Error("Matchmaking failed");
-
-      return await createRes.json();
+      if (!response.ok) throw new Error("Matchmaking failed");
+      return await response.json();
     } catch (error) {
       console.error("Matchmaking error:", error);
       throw error;
