@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useMatchmaking, useMoves, useBoard, useGameSession } from "@/features/chess-game/api";
 import { useEffect, useRef } from "react";
 import { TimeFormatter } from "@/app/utils";
+import { ChessRook, ChessKnight, ChessBishop, ChessQueen } from "lucide-react";
 
 export function GameLayout() {
   const navigate = useNavigate();
@@ -131,16 +132,16 @@ export function GameLayout() {
               <h2 className="text-2xl text-white/80 font-light uppercase tracking-[0.1em] mb-4">Promotion</h2>
               <div className="flex flex-row gap-3">
                 <PrimaryButton>
-                  <ChessPiece type="Queen" color={myColor!} id={gameId!} />
+                  <ChessQueen />
                 </PrimaryButton>
                 <PrimaryButton>
-                  <ChessPiece type="Rook" color={myColor!} id={gameId!} />
+                  <ChessRook />
                 </PrimaryButton>
                 <PrimaryButton>
-                  <ChessPiece type="Knight" color={myColor!} id={gameId!} />
+                  <ChessBishop />
                 </PrimaryButton>
                 <PrimaryButton>
-                  <ChessPiece type="Bishop" color={myColor!} id={gameId!} />
+                  <ChessKnight />
                 </PrimaryButton>
               </div>
             </ChessModal>

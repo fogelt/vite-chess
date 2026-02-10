@@ -87,6 +87,6 @@ export function useMoves(gameId: string | null, connection: any, onOpponentMove:
     isCheckmate, whiteTime,
     blackTime, setWhiteTime,
     setBlackTime, gameOver,
-    setAllLegalMoves
+    setAllLegalMoves,
   };
 }
