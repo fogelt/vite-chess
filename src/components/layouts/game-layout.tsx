@@ -15,7 +15,7 @@ export function GameLayout() {
   const { findOrCreateMatch } = useMatchmaking();
   const { board, setBoard, fetchBoard } = useBoard();
 
-  const { connection, myColor, opponent, setOpponent } = useGameSession(gameId || null);
+  const { connection, myColor, opponent, setOpponent, isOpponentConnected } = useGameSession(gameId || null);
 
   const {
     fetchMoves,
@@ -132,7 +132,7 @@ export function GameLayout() {
     <div className="flex h-screen w-full p-8 gap-8 overflow-hidden items-center justify-center">
       <PrimaryContainer className="flex-col items-center justify-center">
         <div className="relative">
-          <ChessPlayer playerColor={opponentColor} playerName={`${opponent?.username || "Opponent"}`} elo={opponent?.elo || null} timeRemaining={opponentTimeDisplay} />
+          <ChessPlayer playerColor={opponentColor} playerName={`${opponent?.username || "Opponent"}`} elo={opponent?.elo || null} timeRemaining={opponentTimeDisplay} reconnecting={!isOpponentConnected} />
           <ChessBoard
             board={board}
             setBoard={setBoard}

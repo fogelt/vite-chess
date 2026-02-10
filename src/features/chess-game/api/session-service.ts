@@ -9,7 +9,22 @@ export function useGameSession(gameId: string | null) {
   const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
   const [myColor, setMyColor] = useState<string | null>(null);
   const [opponent, setOpponent] = useState<{ username: string, elo: number } | null>(null);
+  const [isOpponentConnected, setIsOpponentConnected] = useState(true);
   const { getUserId } = useAuth();
+
+
+  useEffect(() => {
+    if (!connection || !gameId) return;
+    connection.on("PlayerStatusUpdate", (data: { userId: string, isConnected: boolean }) => {
+      if (data.userId !== getUserId()) {
+        setIsOpponentConnected(data.isConnected);
+      }
+    });
+
+    return () => {
+      connection.off("PlayerStatusUpdate");
+    };
+  }, [connection, gameId, getUserId]);
 
   useEffect(() => {
     if (!gameId) return;
@@ -64,5 +79,5 @@ export function useGameSession(gameId: string | null) {
     }
   }, [connection, gameId, myColor]);
 
-  return { connection, myColor, opponent, setOpponent };
+  return { connection, myColor, opponent, setOpponent, isOpponentConnected };
 }
