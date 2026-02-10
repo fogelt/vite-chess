@@ -1,5 +1,5 @@
 import { PrimaryButton, PrimaryContainer, Spinner } from "@/components/ui"
-import { ChessBoard, ChessPlayer, ChessModal } from '@/features'
+import { ChessBoard, ChessPlayer, ChessModal, ChessPiece } from '@/features'
 import { useNavigate, useParams } from "react-router-dom";
 import { useMatchmaking, useMoves, useBoard, useGameSession } from "@/features/chess-game/api";
 import { useEffect, useRef } from "react";
@@ -26,7 +26,7 @@ export function GameLayout() {
     blackTime,
     setWhiteTime,
     setBlackTime,
-    gameOver
+    gameOver,
   } = useMoves(gameId || null, connection, setBoard, setOpponent);
 
   const isUserBlack = myColor === "Black";
@@ -37,6 +37,8 @@ export function GameLayout() {
 
   const myTimeDisplay = isUserBlack ? formattedBlackTime : formattedWhiteTime;
   const opponentTimeDisplay = isUserBlack ? formattedWhiteTime : formattedBlackTime;
+
+  const promotion = null;
 
   const userStats = {
     username: localStorage.getItem("username") || localStorage.getItem("chess_user_id"),
@@ -121,6 +123,26 @@ export function GameLayout() {
               <h2 className="text-2xl text-white/80 font-light uppercase tracking-[0.1em] mb-4">Please wait</h2>
               <p className="text-xl text-white/80 font-light uppercase tracking-[0.1em] mb-4 animate-pulse">Looking for opponent...</p>
               <Spinner />
+            </ChessModal>
+          )}
+
+          {promotion == null && (
+            <ChessModal className="flex flex-col justify-center items-center text-center">
+              <h2 className="text-2xl text-white/80 font-light uppercase tracking-[0.1em] mb-4">Promotion</h2>
+              <div className="flex flex-row gap-3">
+                <PrimaryButton>
+                  <ChessPiece type="Queen" color={myColor!} id={gameId!} />
+                </PrimaryButton>
+                <PrimaryButton>
+                  <ChessPiece type="Rook" color={myColor!} id={gameId!} />
+                </PrimaryButton>
+                <PrimaryButton>
+                  <ChessPiece type="Knight" color={myColor!} id={gameId!} />
+                </PrimaryButton>
+                <PrimaryButton>
+                  <ChessPiece type="Bishop" color={myColor!} id={gameId!} />
+                </PrimaryButton>
+              </div>
             </ChessModal>
           )}
 

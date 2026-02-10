@@ -1,4 +1,4 @@
-import { Trophy, Coins, LogOut, Contact, Grip } from "lucide-react";
+import { Trophy, Coins, LogOut, Contact } from "lucide-react";
 import bgImage from '@/assets/avatar-1.webp';
 import { PrimaryContainer, PrimaryButton } from "@/components/ui";
 import { FriendButton } from "../friend-button/friend-button";
