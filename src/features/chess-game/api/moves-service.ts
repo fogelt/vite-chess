@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/services';
 import { Move, PromotionPiece } from '@/types'
 
+import useSound from 'use-sound';
+import moveSfx from '@/assets/sounds/move.mp3';
+import checkSfx from '@/assets/sounds/check.mp3';
+
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export function useMoves(gameId: string | null, connection: any, onOpponentMove: (board: any) => void, setOpponent: any) {
@@ -16,11 +20,23 @@ export function useMoves(gameId: string | null, connection: any, onOpponentMove:
   const [whiteTime, setWhiteTime] = useState<number>(600000);
   const [blackTime, setBlackTime] = useState<number>(600000);
 
+  //--Sounds--
+  const [playMove] = useSound(moveSfx);
+  const [playCheck] = useSound(checkSfx);
+
   // Handle SignalR Listeners
   useEffect(() => {
     if (!connection) return;
 
     connection.on("ReceiveMove", (data: any) => {
+
+      //--Sounds--
+      if (data.isCheck) {
+        playCheck();
+      } else {
+        playMove();
+      }
+
       setPlayerTurn(data.currentTurn);
       setIsCheck(data.isCheck);
       setIsCheckmate(data.isCheckmate);
