@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/services';
+import { Move, PromotionPiece } from '@/types'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-interface Move { row: number; column: number; }
 
 export function useMoves(gameId: string | null, connection: any, onOpponentMove: (board: any) => void, setOpponent: any) {
   const [allLegalMoves, setAllLegalMoves] = useState<Record<string, Move[]>>({});
@@ -50,12 +49,12 @@ export function useMoves(gameId: string | null, connection: any, onOpponentMove:
     };
   }, [connection, onOpponentMove, setOpponent]);
 
-  const makeMove = async (from: Move, to: Move) => {
+  const makeMove = async (from: Move, to: Move, promotionPiece: PromotionPiece = "Queen") => {
     if (!gameId) return;
     const response = await fetch(`${BASE_URL}/api/game/make-move`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ gameId, userId: getUserId(), from, to }),
+      body: JSON.stringify({ gameId, userId: getUserId(), from, to, SelectedPromotion: promotionPiece }),
     });
     const data = await response.json();
     setPlayerTurn(data.currentTurn);

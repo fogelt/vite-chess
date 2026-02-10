@@ -1,0 +1,1 @@
+export type Move = { row: number; column: number; }

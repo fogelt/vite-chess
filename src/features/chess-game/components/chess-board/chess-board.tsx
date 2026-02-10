@@ -1,11 +1,7 @@
 import { ChessPiece, ChessSquare } from "@/features";
 import { useState } from "react";
 import { DndContext, DragStartEvent, DragEndEvent } from '@dnd-kit/core';
-
-interface Move {
-  row: number;
-  column: number;
-}
+import { Move, PromotionPiece } from '@/types';
 
 interface ChessBoardProps {
   board: any[];
@@ -25,7 +21,7 @@ export function ChessBoard({ board, setBoard, fetchMoves, availableMoves, setAva
     if (selectedPos && isDestination) {
       const updatedBoard = await makeMove(
         { row: selectedPos.r, column: selectedPos.c },
-        { row: row, column: col }
+        { row: row, column: col },
       );
       if (updatedBoard) setBoard(updatedBoard);
 
