@@ -9,14 +9,11 @@ export function useAuth() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const getUser = (): UserData => {
-    const stored = localStorage.getItem("user_profile");
-    return stored ? JSON.parse(stored) : DEFAULT_GUEST;
-  };
-
   const getUserId = () => {
-    const user = getUser();
-    if (user) return user.username;
+    const stored = localStorage.getItem("user_profile");
+    if (stored) {
+      return JSON.parse(stored).username;
+    }
 
     let id = localStorage.getItem('chess_user_id');
     if (!id) {
@@ -24,6 +21,18 @@ export function useAuth() {
       localStorage.setItem('chess_user_id', id);
     }
     return id;
+  };
+
+  const getUser = (): UserData => {
+    const stored = localStorage.getItem("user_profile");
+
+    if (stored) {
+      return JSON.parse(stored);
+    }
+    return {
+      ...DEFAULT_GUEST,
+      username: getUserId()
+    };
   };
 
   const login = async (credentials: LoginRequest) => {
