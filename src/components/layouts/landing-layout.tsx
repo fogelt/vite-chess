@@ -12,28 +12,10 @@ export function LandingLayout() {
     <div className="flex min-h-screen items-center justify-center ml-[20%] gap-10">
 
       <div className={`${wrapperClass}`}>
-        <PrimaryContainer className={`${containerClass} opacity-50`}>
-          <DecoBoard />
-          <PrimaryButton className="flex" onClick={() => navigate('/game')}>
-            <Contact size={25} className="mt-1 mr-5 text-white" /> Play friend
-          </PrimaryButton>
-        </PrimaryContainer>
-      </div>
-
-      <div className={`${wrapperClass} delay-150`}>
         <PrimaryContainer className={containerClass}>
           <DecoBoard />
           <PrimaryButton className="flex" onClick={() => navigate('/game')}>
             <ChessQueen size={25} className="mt-1 mr-5 text-white" /> Play random
-          </PrimaryButton>
-        </PrimaryContainer>
-      </div>
-
-      <div className={`${wrapperClass} delay-300`}>
-        <PrimaryContainer className={`${containerClass} opacity-50`}>
-          <DecoBoard />
-          <PrimaryButton className="flex" onClick={() => navigate('/game')}>
-            <Bot size={25} className="mt-1 mr-5 text-white" /> Play robot
           </PrimaryButton>
         </PrimaryContainer>
       </div>

@@ -115,6 +115,14 @@ export function GameLayout() {
     initGame();
   }, [gameId, fetchBoard, setAllLegalMoves, setWhiteTime, setBlackTime, navigate]);
 
+  useEffect(() => {
+    return () => {
+      if (connection && connection.state === "Connected") {
+        connection.stop();
+      }
+    };
+  }, [connection, gameId]);
+
   const handlePromotionSelect = async (piece: PromotionPiece) => {
     if (!promotionMove) return;
 
