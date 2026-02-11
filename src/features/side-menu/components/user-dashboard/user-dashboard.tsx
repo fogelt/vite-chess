@@ -1,15 +1,14 @@
-import { Trophy, Coins, LogOut, Contact } from "lucide-react";
+import { Trophy, Coins, LogOut, Contact, PlusIcon } from "lucide-react";
 import bgImage from '@/assets/avatar-1.webp';
 import { PrimaryContainer, PrimaryButton } from "@/components/ui";
 import { FriendButton } from "../friend-button/friend-button";
+import { UserData } from "@/types";
 
-interface UserData {
-  username: string;
-  eloRating: number;
-  coins: number;
-}
 
 export function UserDashboard({ user, onLogout }: { user: UserData, onLogout: () => void }) {
+  const handleAddFriend = () => {
+    user.friends
+  }
   return (
     <div className="flex flex-col h-full space-y-6 text-white">
       <div className="flex items-center space-x-3 pb-4 border-b border-white/20">
@@ -41,6 +40,10 @@ export function UserDashboard({ user, onLogout }: { user: UserData, onLogout: ()
           <div className="flex items-center justify-center space-x-3">
             <Contact className="text-amber-300" size={20} />
             <span className="text-white/70 font-light text-lg uppercase tracking-[0.2em]">Friends</span>
+            <button className="text-amber-300 hover:bg-white/10 p-1 rounded-md mt-[1px]"
+              onClick={() => handleAddFriend()}>
+              <PlusIcon size={20} />
+            </button>
           </div>
           <FriendButton>
             Placeholder friend

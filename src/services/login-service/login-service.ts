@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { LoginRequest, RegisterRequest } from "@/types";
 import { useNavigate } from "react-router-dom";
+import { UserData, DEFAULT_GUEST } from "@/types";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -8,9 +9,14 @@ export function useAuth() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const getUser = (): UserData => {
+    const stored = localStorage.getItem("user_profile");
+    return stored ? JSON.parse(stored) : DEFAULT_GUEST;
+  };
+
   const getUserId = () => {
-    const username = localStorage.getItem("username");
-    if (username) return username;
+    const user = getUser();
+    if (user) return user.username;
 
     let id = localStorage.getItem('chess_user_id');
     if (!id) {
@@ -29,13 +35,12 @@ export function useAuth() {
         body: JSON.stringify(credentials),
       });
 
-      const data = await response.json();
+      const data: UserData = await response.json();
       if (!response.ok) throw new Error(data.message || "Login failed");
-      console.log(data)
+      const { message, ...userProfile } = data;
+      localStorage.setItem("user_profile", JSON.stringify(userProfile));
+
       localStorage.setItem("token", data.token);
-      localStorage.setItem("username", data.username);
-      localStorage.setItem("elo", data.elo.toString());
-      localStorage.setItem("coins", data.coins.toString());
 
       localStorage.removeItem('chess_user_id');
 
@@ -79,7 +84,7 @@ export function useAuth() {
     login,
     register,
     logout,
-    getUserId,
+    getUserId, user: getUser(),
     loading,
     isAuthenticated: !!localStorage.getItem("token")
   };

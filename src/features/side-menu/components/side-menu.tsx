@@ -2,23 +2,14 @@ import { useLocation } from "react-router-dom";
 import { useAuth } from "@/services";
 import { LoginForm } from "./login-form/login-form";
 import { UserDashboard } from "./user-dashboard/user-dashboard";
-import { FriendButton } from "./friend-button/friend-button";
 
 export function SideMenu() {
   const location = useLocation();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
 
   if (location.pathname === "/register") {
     return null;
   }
-
-  const username = localStorage.getItem("username") || "Guest";
-
-  const userStats = {
-    username: username,
-    eloRating: Number(localStorage.getItem("elo")),
-    coins: Number(localStorage.getItem("coins"))
-  };
 
   return (
     <div className={`hidden lg:flex flex-col absolute inset-left bg-gray-600/30 h-full w-[20%] 
@@ -26,7 +17,7 @@ export function SideMenu() {
       animate-in fade-in duration-700 slide-in-from-left-24 delay-700 fill-mode-backwards`}>
 
       {isAuthenticated ? (
-        <UserDashboard user={userStats} onLogout={logout} />
+        <UserDashboard user={user} onLogout={logout} />
       ) : (
         <LoginForm />
       )}

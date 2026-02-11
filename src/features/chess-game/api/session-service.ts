@@ -10,7 +10,7 @@ export function useGameSession(gameId: string | null) {
   const [myColor, setMyColor] = useState<string | null>(null);
   const [opponent, setOpponent] = useState<{ username: string, elo: number } | null>(null);
   const [isOpponentConnected, setIsOpponentConnected] = useState(true);
-  const { getUserId } = useAuth();
+  const { getUserId, user } = useAuth();
 
 
   useEffect(() => {
@@ -29,8 +29,8 @@ export function useGameSession(gameId: string | null) {
   useEffect(() => {
     if (!gameId) return;
 
-    const username = localStorage.getItem("username") || localStorage.getItem("chess_user_id") || "Guest";
-    const elo = Number(localStorage.getItem("elo"));
+    const username = user.username
+    const elo = user.eloRating
 
     const initSession = async () => {
       try {
@@ -71,8 +71,8 @@ export function useGameSession(gameId: string | null) {
   useEffect(() => {
     if (connection?.state === signalR.HubConnectionState.Connected && gameId && myColor) {
       const userId = getUserId();
-      const username = localStorage.getItem("username") || localStorage.getItem("chess_user_id") || "Guest";
-      const elo = Number(localStorage.getItem("elo"));
+      const username = user.username
+      const elo = user.eloRating
 
       connection.invoke("JoinGame", gameId, userId, username, elo)
         .catch(err => console.error("JoinGame Error:", err));

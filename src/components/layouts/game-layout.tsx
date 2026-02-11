@@ -15,7 +15,7 @@ export function GameLayout() {
 
   const { findOrCreateMatch } = useMatchmaking();
   const { board, setBoard, fetchBoard } = useBoard();
-  const { getUserId } = useAuth();
+  const { getUserId, user } = useAuth();
   const { connection, myColor, opponent, setOpponent, isOpponentConnected } = useGameSession(gameId || null);
 
   const {
@@ -41,11 +41,6 @@ export function GameLayout() {
 
   const myTimeDisplay = isUserBlack ? formattedBlackTime : formattedWhiteTime;
   const opponentTimeDisplay = isUserBlack ? formattedWhiteTime : formattedBlackTime;
-
-  const userStats = {
-    username: localStorage.getItem("username") || localStorage.getItem("chess_user_id"),
-    eloRating: Number(localStorage.getItem("elo"))
-  };
 
   const matchmakingStarted = useRef(false);
 
@@ -214,7 +209,7 @@ export function GameLayout() {
               </PrimaryButton>
             </ChessModal>
           )}
-          <ChessPlayer playerColor={myColor} playerName={userStats.username} elo={userStats.eloRating || null} timeRemaining={myTimeDisplay} />
+          <ChessPlayer playerColor={myColor} playerName={user.username} elo={user.eloRating || null} timeRemaining={myTimeDisplay} />
         </div>
       </PrimaryContainer >
 

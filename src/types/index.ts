@@ -1,3 +1,5 @@
-export * from './auth-types'
+export * from './user/user-data'
+export * from './user/login-request'
+export * from './user//register-request'
 export * from './chess/move'
 export * from './chess/promotion-piece'
