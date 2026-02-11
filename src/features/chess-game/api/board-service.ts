@@ -17,9 +17,6 @@ export function useBoard() {
       const response = await fetch(`${BASE_URL}/api/game/${gameId}/board`, {
         cache: 'no-store'
       });
-      if (response.status === 404) {
-        return null;
-      }
       if (!response.ok) throw new Error("Failed to fetch board");
 
       const data = await response.json();

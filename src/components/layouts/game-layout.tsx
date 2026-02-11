@@ -1,22 +1,21 @@
 import { PrimaryButton, PrimaryContainer, Spinner } from "@/components/ui"
-import { ChessBoard, ChessPlayer, ChessModal, ChessPiece } from '@/features'
+import { ChessBoard, ChessPlayer, ChessModal } from '@/features'
 import { useNavigate, useParams } from "react-router-dom";
 import { useMatchmaking, useMoves, useBoard, useGameSession } from "@/features/chess-game/api";
 import { useEffect, useRef, useState } from "react";
 import { TimeFormatter } from "@/app/utils";
 import { ChessRook, ChessKnight, ChessBishop, ChessQueen } from "lucide-react";
 import { PromotionPiece } from "@/types";
+import { useAuth } from "@/services";
 
 export function GameLayout() {
   const navigate = useNavigate();
   const [promotionMove, setPromotionMove] = useState<{ from: any; to: any } | null>(null);
   const { gameId } = useParams<{ gameId: string }>();
-  const processingId = useRef<string | null>(null);
-  const lastFetchedId = useRef<string | null>(null);
 
   const { findOrCreateMatch } = useMatchmaking();
   const { board, setBoard, fetchBoard } = useBoard();
-
+  const { getUserId } = useAuth();
   const { connection, myColor, opponent, setOpponent, isOpponentConnected } = useGameSession(gameId || null);
 
   const {
@@ -72,30 +71,13 @@ export function GameLayout() {
 
   useEffect(() => {
     const initMatch = async () => {
-      if (gameId && gameId === lastFetchedId.current) return;
-      if (matchmakingStarted.current) return;
+      if (gameId || matchmakingStarted.current) return;
+      matchmakingStarted.current = true;
 
       try {
-        if (gameId) {
-          const data = await fetchBoard(gameId);
-
-          if (data && !data.isGameOver) {
-            lastFetchedId.current = gameId;
-            if (data.allLegalMoves) setAllLegalMoves(data.allLegalMoves);
-            if (data.whiteTimeMs) setWhiteTime(data.whiteTimeMs);
-            if (data.blackTimeMs) setBlackTime(data.blackTimeMs);
-            return;
-          }
-
-          lastFetchedId.current = null;
-        }
-
-        matchmakingStarted.current = true;
-        const matchData = await findOrCreateMatch(userStats.username!);
-
-        if (matchData?.gameId) {
-          matchmakingStarted.current = false;
-          navigate(`/game/${matchData.gameId}`, { replace: true });
+        const data = await findOrCreateMatch(getUserId());
+        if (data?.gameId) {
+          navigate(`/game/${data.gameId}`, { replace: true });
         }
       } catch (e) {
         matchmakingStarted.current = false;
@@ -104,7 +86,34 @@ export function GameLayout() {
     };
 
     initMatch();
-  }, [gameId, fetchBoard, findOrCreateMatch, navigate, setAllLegalMoves, setWhiteTime, setBlackTime]);
+  }, [gameId, findOrCreateMatch, navigate]);
+
+  useEffect(() => {
+    const initGame = async () => {
+      if (!gameId) return;
+
+      try {
+        const data = await fetchBoard(gameId);
+
+        if (data) {
+          if (data.isGameOver) {
+            navigate('/', { replace: true });
+            return;
+          }
+
+          if (data.allLegalMoves) {
+            setAllLegalMoves(data.allLegalMoves);
+          }
+          if (data.whiteTimeMs) setWhiteTime(data.whiteTimeMs);
+          if (data.blackTimeMs) setBlackTime(data.blackTimeMs);
+        }
+      } catch (error) {
+        navigate('/', { replace: true });
+      }
+    };
+
+    initGame();
+  }, [gameId, fetchBoard, setAllLegalMoves, setWhiteTime, setBlackTime, navigate]);
 
   const handlePromotionSelect = async (piece: PromotionPiece) => {
     if (!promotionMove) return;
