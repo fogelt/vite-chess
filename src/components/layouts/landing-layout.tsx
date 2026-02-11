@@ -9,7 +9,7 @@ export function LandingLayout() {
   const containerClass = "flex flex-col items-center justify-center gap-5 transition-transform duration-200 hover:scale-[1.05]";
 
   return (
-    <div className="flex min-h-screen items-center justify-center ml-[20%] gap-10">
+    <div className="flex min-h-screen items-center justify-center lg:ml-[20%] gap-10">
 
       <div className={`${wrapperClass}`}>
         <PrimaryContainer className={containerClass}>
