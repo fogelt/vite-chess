@@ -30,7 +30,7 @@ export function useGameSession(gameId: string | null) {
     if (!gameId) return;
 
     const username = user.username
-    const elo = user.eloRating
+    const elo = user.elo
 
     const initSession = async () => {
       try {
@@ -72,7 +72,7 @@ export function useGameSession(gameId: string | null) {
     if (connection?.state === signalR.HubConnectionState.Connected && gameId && myColor) {
       const userId = getUserId();
       const username = user.username
-      const elo = user.eloRating
+      const elo = user.elo
 
       connection.invoke("JoinGame", gameId, userId, username, elo)
         .catch(err => console.error("JoinGame Error:", err));
