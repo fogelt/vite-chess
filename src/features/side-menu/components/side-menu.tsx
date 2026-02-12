@@ -5,7 +5,7 @@ import { UserDashboard } from "./user-dashboard/user-dashboard";
 
 export function SideMenu() {
   const location = useLocation();
-  const { isAuthenticated, logout, user } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
 
   if (location.pathname === "/register") {
     return null;
@@ -17,7 +17,7 @@ export function SideMenu() {
       animate-in fade-in duration-700 slide-in-from-left-24 delay-700 fill-mode-backwards`}>
 
       {isAuthenticated ? (
-        <UserDashboard user={user} onLogout={logout} />
+        <UserDashboard onLogout={logout} />
       ) : (
         <LoginForm />
       )}

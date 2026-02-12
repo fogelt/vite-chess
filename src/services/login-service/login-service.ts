@@ -47,6 +47,7 @@ export function useAuth() {
       const data: UserData = await response.json();
       if (!response.ok) throw new Error(data.message || "Login failed");
       const { message, ...userProfile } = data;
+      console.log(data)
       localStorage.setItem("user_profile", JSON.stringify(userProfile));
 
       localStorage.setItem("token", data.token);
@@ -83,6 +84,40 @@ export function useAuth() {
     }
   };
 
+  const addFriend = async (friendUsername: string) => {
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await fetch(`${BASE_URL}/api/user/add-friend`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ friendUsername }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Could not add friend");
+      }
+
+      const currentProfile = getUser();
+      const updatedProfile = {
+        ...currentProfile,
+        friends: [...currentProfile.friends, friendUsername]
+      };
+
+      localStorage.setItem("user_profile", JSON.stringify(updatedProfile));
+
+      return updatedProfile;
+    } catch (error) {
+      console.error("Add friend error:", error);
+      throw error;
+    }
+  };
+
   const logout = () => {
     localStorage.clear();
     navigate('/');
@@ -92,7 +127,7 @@ export function useAuth() {
   return {
     login,
     register,
-    logout,
+    logout, addFriend,
     getUserId, user: getUser(),
     loading,
     isAuthenticated: !!localStorage.getItem("token")
