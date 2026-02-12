@@ -38,7 +38,7 @@ export function UserDashboard({ onLogout }: { onLogout: () => void }) {
             <Trophy className="text-amber-300" size={20} />
             <span className="text-white/70 font-light text-lg uppercase tracking-[0.2em]">Rating</span>
           </div>
-          <span className="text-white/70 font-light text-lg uppercase tracking-[0.2em] font-mono">{user.eloRating}</span>
+          <span className="text-white/70 font-light text-lg uppercase tracking-[0.2em] font-mono">{user.elo}</span>
         </PrimaryContainer>
 
         <PrimaryContainer className="rounded-lg flex items-center justify-between h-7">
