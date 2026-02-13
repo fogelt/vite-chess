@@ -1,6 +1,6 @@
 import { PrimaryButton, PrimaryContainer, Spinner } from "@/components/ui"
 import { ChessBoard, ChessPlayer, ChessModal } from '@/features'
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useMatchmaking, useMoves, useBoard, useGameSession } from "@/features/chess-game/api";
 import { useEffect, useRef, useState } from "react";
 import { TimeFormatter } from "@/app/utils";
@@ -17,6 +17,9 @@ export function GameLayout() {
   const { board, setBoard, fetchBoard } = useBoard();
   const { getUserId, user } = useAuth();
   const { connection, myColor, opponent, setOpponent, isOpponentConnected } = useGameSession(gameId || null);
+
+  const location = useLocation();
+  const mode = location.state?.mode;
 
   const {
     fetchMoves,
@@ -70,7 +73,7 @@ export function GameLayout() {
       matchmakingStarted.current = true;
 
       try {
-        const data = await findOrCreateMatch(getUserId());
+        const data = await findOrCreateMatch(getUserId(), mode);
         if (data?.gameId) {
           navigate(`/game/${data.gameId}`, { replace: true });
         }
@@ -209,7 +212,7 @@ export function GameLayout() {
               </PrimaryButton>
             </ChessModal>
           )}
-          <ChessPlayer playerColor={myColor} playerName={user.username} elo={user.eloRating || null} timeRemaining={myTimeDisplay} />
+          <ChessPlayer playerColor={myColor} playerName={user.username} elo={user.elo || null} timeRemaining={myTimeDisplay} />
         </div>
       </PrimaryContainer >
 
